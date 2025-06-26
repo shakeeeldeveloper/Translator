@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:paddingEnd="8dp"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/doneText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Done"
+        android:textColor="#2B92FF"
+        android:textSize="14sp"
+        android:background="@drawable/bg_done_button"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="6dp"
+        android:gravity="center" />
+</LinearLayout>
