@@ -3,11 +3,13 @@
     <layer-list>
       <item>
         <shape android:shape="oval">
-          <solid android:color="#2196F3" /> <!-- Blue when ON -->
+          <solid android:color="#2890ff" /> <!-- Blue when ON -->
           <size android:width="24dp" android:height="24dp" />
+          <stroke android:color="#2890ff" android:width="3dp"/>
+
         </shape>
       </item>
-      <item android:drawable="@drawable/power_icon" android:gravity="center" />
+      <item android:drawable="@drawable/switch_icon_on" android:gravity="center" />
     </layer-list>
   </item>
 
@@ -17,9 +19,10 @@
         <shape android:shape="oval">
           <solid android:color="#F44336" /> <!-- Red when OFF -->
           <size android:width="24dp" android:height="24dp" />
+          <stroke android:color="#de6240" android:width="3dp"/>
         </shape>
       </item>
-      <item android:drawable="@drawable/power_icon" android:gravity="center" />
+      <item android:drawable="@drawable/switch_icon_off" android:gravity="center" />
     </layer-list>
   </item>
 </selector>

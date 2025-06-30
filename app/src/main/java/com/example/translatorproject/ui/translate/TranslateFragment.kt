@@ -1,6 +1,9 @@
 package com.example.translatorproject.ui.translate
 
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +16,7 @@ import com.example.translatorproject.ui.home.HomeViewModel
 import com.example.translatorproject.databinding.FragmentTranslateBinding
 import com.example.translatorproject.ui.language.LanguageFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.core.graphics.toColorInt
 
 class TranslateFragment : Fragment() {
 
@@ -33,11 +37,32 @@ class TranslateFragment : Fragment() {
         _binding = FragmentTranslateBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-       /* val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }*/
-        /*parentFragmentManager.setFragmentResultListener(
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)?.visibility = View.GONE
+
+
+        binding.textEditTxt.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val hasText = !s.isNullOrBlank()
+
+                val iconRes = if (hasText) {
+                    R.drawable.trans_svg  // your translate icon
+                } else {
+                    R.drawable.voice_icon  // your mic icon
+                }
+
+                binding.transBtn.setImageResource(iconRes)
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+
+        /* val textView: TextView = binding.textHome
+         homeViewModel.text.observe(viewLifecycleOwner) {
+             textView.text = it
+         }*/
+        parentFragmentManager.setFragmentResultListener(
             "languageRequestKey",
             viewLifecycleOwner
         ) { requestKey, bundle ->
@@ -45,19 +70,21 @@ class TranslateFragment : Fragment() {
 
             val selectedLanguage = bundle.getString("selectedLanguage")
 
-            selectedLanguage?.let {
+            /*selectedLanguage?.let {
                 //Toast.makeText(requireContext(), "You selected: $it", Toast.LENGTH_SHORT).show()
 
                 binding.langTV.text = it
-            }
+            }*/
             val requestFor = bundle.getString("requestFor")
 
             when (requestFor) {
-                "button1" -> binding.langTV.text = selectedLanguage
-                "button2" -> binding.crossImg.text = selectedLanguage
+                "button1" -> {binding.lang1TV.text = selectedLanguage
+                    binding.langTV.text = selectedLanguage}
+
+                        "button2" -> binding.lang2TV.text = selectedLanguage
             }
         }
-        binding.engLangBtn.setOnClickListener {
+        binding.langBtn1.setOnClickListener {
 
             val languageFragment = LanguageFragment()
             languageFragment.arguments = Bundle().apply {
@@ -69,7 +96,7 @@ class TranslateFragment : Fragment() {
                 .addToBackStack(null) // optional: adds to back stack
                 .commit()
         }
-        binding.urduLangBtn.setOnClickListener {
+        binding.langBtn2.setOnClickListener {
 
             val languageFragment = LanguageFragment()
             languageFragment.arguments = Bundle().apply {
@@ -82,15 +109,6 @@ class TranslateFragment : Fragment() {
                 .commit()
         }
 
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-
-        binding.customSwitch.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                Toast.makeText(requireContext(), "Switch ON", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(requireContext(), "Switch OFF", Toast.LENGTH_SHORT).show()
-            }
-        }*/
 
 
         return root

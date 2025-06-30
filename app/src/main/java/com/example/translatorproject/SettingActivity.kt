@@ -28,7 +28,12 @@ class SettingActivity : AppCompatActivity() {
         val itemList = listOf(
             SettingModel("Change Language", R.drawable.changelang_icon),
             SettingModel("Bookmark", R.drawable.bookmark_icon),
-            SettingModel("History", R.drawable.history_icon)
+            SettingModel("History", R.drawable.history_icon),
+            SettingModel("Rate Us", R.drawable.rate_us),
+            SettingModel("Share App", R.drawable.share_icon),
+            SettingModel("Customer Support", R.drawable.customer_support),
+            SettingModel("About App", R.drawable.about_us)
+
         )
 
         adapter = SettingAdapter(itemList)

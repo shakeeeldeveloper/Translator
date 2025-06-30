@@ -19,7 +19,7 @@
         android:layout_marginRight="16dp"
         >
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/trans_TV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
@@ -77,24 +77,22 @@
                     app:layout_constraintBottom_toTopOf="@id/textView3" />
 
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
+                <!-- Description -->
+
+                <Switch
                     android:id="@+id/customSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:thumb="@drawable/switch_thumb"
-                    android:track="@drawable/switch_track"
-                    android:textOn="ON"
-                    android:textOff="OFF"
-                    android:showText="true"
-                    android:textSize="12sp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="16dp"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginTop="12dp"
+                    android:textSize="12sp"
+                    android:thumb="@drawable/switch_thumb"
+                    android:track="@drawable/switch_track"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <!-- Description -->
                 <TextView
                     android:id="@+id/textView3"
                     android:layout_width="212dp"
@@ -136,23 +134,20 @@
 
             >
 
-            <LinearLayout
-                android:layout_width="45dp"
-                android:layout_height="45dp"
-                android:layout_marginRight="15dp"
-                android:layout_marginBottom="15dp"
-                android:background="@drawable/bg_circle_blue"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+
 
                 <ImageView
-                    android:id="@+id/imageView4"
-                    android:layout_width="67dp"
+                    android:id="@+id/transBtn"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/voice_icon" />
-            </LinearLayout>
+                    app:srcCompat="@drawable/voice_icon"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="15dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    />
+
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/urduLangBtn"
@@ -224,7 +219,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/editTextTextMultiLine"
+                android:id="@+id/text_trans"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
