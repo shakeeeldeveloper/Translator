@@ -20,6 +20,8 @@ import com.example.translatorproject.adapter.LanguageAdapter
 import com.example.translatorproject.databinding.FragmentLanguageBinding
 import com.example.translatorproject.model.LanguageModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.util.Locale
+
 
 
 class LanguageFragment : Fragment() {
@@ -79,17 +81,12 @@ class LanguageFragment : Fragment() {
             }
         })
 
-        // Language list
-        val languages = listOf(
-            LanguageModel("English"), LanguageModel("Urdu"), LanguageModel("Arabic"),
-            LanguageModel("French"), LanguageModel("German"), LanguageModel("Spanish"),
-            LanguageModel("Hindi"), LanguageModel("Chinese"), LanguageModel("Turkish")
-        )
+
+        val languages1=getAllLanguages()
 
 // Access done menu item
         val doneMenuItem = toolbar.menu.findItem(R.id.action_done)
         val doneView = doneMenuItem.actionView?.findViewById<TextView>(R.id.doneText)
-        Log.d("LANG_DEBUG", "Done View Exists? ${doneView != null}")
 
 
         doneView?.setOnClickListener {
@@ -97,7 +94,10 @@ class LanguageFragment : Fragment() {
                 //Toast.makeText(requireContext(), "Selected: ${it.name}", Toast.LENGTH_SHORT).show()
 
                 val result = Bundle().apply {
+                    Log.d("LANG_DEBUG", "Done View Exists? ${launchedBy}")
+
                     putString("selectedLanguage", it.name)
+                    putString("LanguageCode",it.code)
                     putString("requestFor", launchedBy) // pass back who launched
 
                 }
@@ -112,7 +112,7 @@ class LanguageFragment : Fragment() {
 
 
 
-        adapter = LanguageAdapter(languages) { selected ->
+        adapter = LanguageAdapter(languages1) { selected ->
             selectedLanguage = selected
             doneMenuItem.isVisible = true // Show the "Done" button
         }
@@ -122,6 +122,42 @@ class LanguageFragment : Fragment() {
 
 
     }
+    fun getAllLanguages(): List<LanguageModel> {
+        val locales = Locale.getAvailableLocales()
+        val languageMap = mutableMapOf<String, String>() // code -> name
+
+        for (locale in locales) {
+            val code = locale.language
+            val name = locale.getDisplayLanguage(Locale.ENGLISH).trim()
+
+            if (code.isNotEmpty() && name.isNotEmpty()) {
+                languageMap[code] = name // This will avoid duplicate codes
+            }
+        }
+
+        return languageMap
+            .map { (code, name) -> LanguageModel(code = code, name = name) }
+            .sortedBy { it.name }
+    }
+
+ /*   fun getAllCountryLanguages(): List<LanguageModel> {
+        val locales = Locale.getAvailableLocales()
+        val languageSet = mutableSetOf<String>()
+
+        for (locale in locales) {
+            val language = locale.getDisplayLanguage(Locale.ENGLISH).trim()
+            if (language.isNotEmpty()) {
+                languageSet.add(language)
+            }
+        }
+
+        return languageSet
+            .distinct()
+            .sorted()
+            .map { LanguageModel(name = it) }
+    }*/
+
+
 
     /*
         override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -20,6 +20,9 @@ import com.example.translatorproject.databinding.FragmentHomeBinding
 import com.example.translatorproject.ui.language.LanguageFragment
 import com.example.translatorproject.ui.translate.TranslateFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.mlkit.nl.translate.TranslateLanguage
+import com.google.mlkit.nl.translate.Translation
+import com.google.mlkit.nl.translate.TranslatorOptions
 import kotlin.jvm.java
 
 class HomeFragment : Fragment() {
@@ -29,6 +32,14 @@ class HomeFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private var selectedLang1: String = "English"
+    private var selectedLang2: String = "Urdu"
+    private var selectedLang1Code: String="en"
+    private var selectedLang2Code: String="ur"
+
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,30 +53,32 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)?.visibility = View.VISIBLE
 
-       /* val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }*/
+
+
         parentFragmentManager.setFragmentResultListener(
             "languageRequestKey",
             viewLifecycleOwner
-        ) { requestKey, bundle ->
-          //  requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)?.visibility = View.VISIBLE
-
+        ) { _, bundle ->
             val selectedLanguage = bundle.getString("selectedLanguage")
-
-            selectedLanguage?.let {
-                //Toast.makeText(requireContext(), "You selected: $it", Toast.LENGTH_SHORT).show()
-
-                binding.langTV.text = it
-            }
             val requestFor = bundle.getString("requestFor")
+            val selectedLanguageCode=bundle.getString("LanguageCode")
 
             when (requestFor) {
-                "button1" -> binding.langTV.text = selectedLanguage
-                "button2" -> binding.urduLangTV.text = selectedLanguage
+                "button1" -> {
+                    selectedLang1 = selectedLanguage ?: "English"
+                    binding.lang1TV.text = selectedLang1
+                    selectedLang1Code= selectedLanguageCode.toString()
+                }
+                "button2" -> {
+                    selectedLang2 = selectedLanguage ?: "Urdu"
+                    binding.lang2TV.text = selectedLang2
+                    selectedLang2Code= selectedLanguageCode.toString()
+
+                }
             }
         }
+
+
         binding.engLangBtn.setOnClickListener {
 
             val languageFragment = LanguageFragment()
@@ -114,6 +127,61 @@ class HomeFragment : Fragment() {
                 .commit()
 
         }
+        binding.rotateIcon.setOnClickListener {
+
+            val tempLang = binding.lang1TV.text
+            binding.lang1TV.text = binding.lang2TV.text
+            binding.lang2TV.text = tempLang
+
+            val tempLangCode=selectedLang1Code
+            selectedLang1Code=selectedLang2Code
+            selectedLang2Code=tempLangCode
+
+
+
+
+        }
+
+        binding.transBtn.setOnClickListener {
+            val sourceText = binding.textTrans.text.toString().trim()
+
+            if (sourceText.isEmpty()) {
+                Toast.makeText(requireContext(), "Enter text to translate", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val sourceMLLang = TranslateLanguage.fromLanguageTag(selectedLang1Code)
+            val targetMLLang = TranslateLanguage.fromLanguageTag(selectedLang2Code)
+
+
+            if (sourceMLLang != null && targetMLLang != null) {
+                val options = TranslatorOptions.Builder()
+                    .setSourceLanguage(sourceMLLang)
+                    .setTargetLanguage(targetMLLang)
+                    .build()
+
+                val translator = Translation.getClient(options)
+
+                translator.downloadModelIfNeeded()
+                    .addOnSuccessListener {
+                        translator.translate(sourceText)
+                            .addOnSuccessListener { translatedText ->
+                                openTranslateFragment(sourceText, translatedText)
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(requireContext(), "Translation failed", Toast.LENGTH_SHORT).show()
+                            }
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(requireContext(), "Model download failed", Toast.LENGTH_SHORT).show()
+                    }
+            } else {
+                Toast.makeText(requireContext(), "Invalid language code", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
+
         binding.textTrans.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val hasText = !s.isNullOrBlank()
@@ -131,9 +199,18 @@ class HomeFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
+        binding.lang1TV.text = selectedLang1
+        binding.lang2TV.text = selectedLang2
 
 
         return root
+    }
+    private fun openTranslateFragment(originalText: String, translatedText: String) {
+        val fragment = TranslateFragment.newInstance(originalText, translatedText)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.nav_host_fragment, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     override fun onDestroyView() {

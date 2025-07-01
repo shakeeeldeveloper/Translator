@@ -52,10 +52,11 @@
     language buttons
 -->
     <androidx.cardview.widget.CardView
+        android:id="@+id/langSelectors"
         android:layout_width="match_parent"
         android:layout_height="73dp"
         android:layout_marginTop="15dp"
-
+        android:visibility="gone"
         app:cardCornerRadius="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -151,6 +152,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
+        android:visibility="gone"
         app:cardCornerRadius="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -182,7 +184,7 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
-                android:ems="10"
+                android:background="@android:color/transparent"
                 android:gravity="start|top"
                 android:hint="Type your text here"
                 android:inputType="textMultiLine"
@@ -220,17 +222,16 @@
     After translate
 -->
     <androidx.cardview.widget.CardView
-        android:id="@+id/afterTransCV"
+        android:id="@+id/originalTextCV"
         android:layout_width="match_parent"
-        android:layout_height="329dp"
-        android:layout_marginTop="15dp"
+        android:layout_height="250dp"
         android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
         android:layout_marginRight="15dp"
         app:cardCornerRadius="12dp"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView" >
+        app:layout_constraintTop_toBottomOf="@+id/cardView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -240,7 +241,7 @@
 
 
             <TextView
-                android:id="@+id/originalTV"
+                android:id="@+id/originalTVHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|center_horizontal"
@@ -251,36 +252,38 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
+            <EditText
                 android:id="@+id/originalText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
-                android:ems="10"
+                android:background="@android:color/transparent"
                 android:gravity="start|top"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.156"
+                app:layout_constraintHorizontal_bias="0.125"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/originalTV" />
+                app:layout_constraintTop_toBottomOf="@+id/originalTVHeader" />
 
             <ImageView
                 android:id="@+id/editIcon"
                 android:layout_width="14dp"
                 android:layout_height="14dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="44dp"
                 android:src="@drawable/edit_icon"
-                app:layout_constraintEnd_toEndOf="@+id/crossImg1"
-                app:layout_constraintHorizontal_bias="0.83"
+                app:layout_constraintBottom_toTopOf="@+id/originalText"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/originalTV"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
 
             <ImageView
                 android:id="@+id/crossImg1"
                 android:layout_width="14dp"
                 android:layout_height="14dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginEnd="16dp"
                 android:src="@drawable/cross_icon"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -289,9 +292,12 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                >
+                app:layout_constraintTop_toBottomOf="@+id/originalText"
+                app:layout_constraintVertical_bias="0.984">
+
                 <ImageView
                     android:id="@+id/copyIcon"
                     android:layout_width="wrap_content"
@@ -300,6 +306,7 @@
                     android:layout_marginBottom="16dp"
                     android:layout_weight="1"
                     app:srcCompat="@drawable/copy_icon" />
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -307,6 +314,7 @@
                     android:layout_marginBottom="16dp"
                     android:layout_weight="1"
                     app:srcCompat="@drawable/line_icon" />
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -316,35 +324,31 @@
                     app:srcCompat="@drawable/speak_icon" />
 
 
-
             </LinearLayout>
-
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
+
     <androidx.cardview.widget.CardView
-        android:id="@+id/afterTransaltedCV"
+        android:id="@+id/translatedCV"
         android:layout_width="match_parent"
-        android:layout_height="329dp"
-        android:layout_marginTop="15dp"
+        android:layout_height="250dp"
         android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
         android:layout_marginRight="15dp"
-        android:visibility="gone"
         app:cardCornerRadius="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView" >
+        app:layout_constraintTop_toBottomOf="@+id/cardView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
             >
 
-
             <TextView
-                android:id="@+id/translated"
+                android:id="@+id/translatedTVHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|center_horizontal"
@@ -355,28 +359,28 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
+
+            <EditText
                 android:id="@+id/translatedText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginRight="16dp"
-                android:ems="10"
+                android:background="@android:color/transparent"
                 android:gravity="start|top"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.156"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/translated" />
-
-
+                app:layout_constraintTop_toBottomOf="@+id/translatedTVHeader" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                >
+                app:layout_constraintTop_toBottomOf="@+id/translatedText"
+                app:layout_constraintVertical_bias="0.981">
+
                 <ImageView
                     android:id="@+id/copyIconTrans"
                     android:layout_width="wrap_content"
@@ -385,6 +389,7 @@
                     android:layout_marginBottom="16dp"
                     android:layout_weight="1"
                     app:srcCompat="@drawable/copy_icon" />
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -392,6 +397,7 @@
                     android:layout_marginBottom="16dp"
                     android:layout_weight="1"
                     app:srcCompat="@drawable/line_icon" />
+
                 <ImageView
                     android:id="@+id/speakIconTrans"
                     android:layout_width="wrap_content"
@@ -400,6 +406,7 @@
                     android:layout_marginBottom="16dp"
                     android:layout_weight="1"
                     app:srcCompat="@drawable/capture_icon" />
+
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -407,6 +414,7 @@
                     android:layout_marginBottom="16dp"
                     android:layout_weight="1"
                     app:srcCompat="@drawable/line_icon" />
+
                 <ImageView
                     android:id="@+id/bookmarkIconTrans"
                     android:layout_width="wrap_content"
@@ -417,9 +425,7 @@
                     app:srcCompat="@drawable/bookmark_icon_small" />
 
 
-
             </LinearLayout>
-
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,7 +11,7 @@
         android:id="@+id/customToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#F0F6FF"
+        android:background="#ffffff"
         android:elevation="4dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -86,29 +86,28 @@
             </LinearLayout>
 
             <EditText
-                android:id="@+id/textEditTxt"
+                android:id="@+id/person1EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="36dp"
                 android:background="@android:color/transparent"
                 android:ems="10"
                 android:gravity="center"
-                android:hint="Hello how are you?"
                 android:inputType="textMultiLine"
                 app:layout_constraintTop_toBottomOf="@+id/speak_layout" />
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/engLangBtn"
+                android:id="@+id/lang1Btn"
                 android:layout_width="112dp"
                 android:layout_height="48dp"
-                android:layout_marginEnd="180dp"
                 android:background="#e7f3ff"
                 app:cardCornerRadius="7dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/transBtn"
+                app:layout_constraintEnd_toEndOf="@+id/transBtn"
+                app:layout_constraintHorizontal_bias="0.109"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textEditTxt"
-                app:layout_constraintVertical_bias="0.888">
+                app:layout_constraintTop_toBottomOf="@+id/person1EditText"
+                app:layout_constraintVertical_bias="0.877">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -119,7 +118,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/langTV"
+                        android:id="@+id/lang1TV"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
@@ -136,7 +135,7 @@
                 android:layout_marginEnd="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textEditTxt"
+                app:layout_constraintTop_toBottomOf="@+id/person1EditText"
                 app:layout_constraintVertical_bias="0.045"
                 app:srcCompat="@drawable/voice_icon1" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -174,19 +173,18 @@
             </LinearLayout>
 
             <EditText
-                android:id="@+id/textEditText"
+                android:id="@+id/person2EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="48dp"
                 android:background="@android:color/transparent"
                 android:ems="10"
                 android:gravity="center"
-                android:hint="Hello how are you?"
                 android:inputType="textMultiLine"
                 app:layout_constraintTop_toBottomOf="@+id/speak_layout_icon" />
 
             <ImageView
-                android:id="@+id/transBtn1"
+                android:id="@+id/voiceIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="15dp"
@@ -196,17 +194,18 @@
                 app:srcCompat="@drawable/voice_icon1" />
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/engLangBtn1"
+                android:id="@+id/lang2Btn"
                 android:layout_width="112dp"
                 android:layout_height="48dp"
                 android:layout_marginEnd="180dp"
                 android:background="#e7f3ff"
                 app:cardCornerRadius="7dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/transBtn1"
+                app:layout_constraintEnd_toStartOf="@+id/voiceIcon"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textEditText"
-                app:layout_constraintVertical_bias="0.888">
+                app:layout_constraintTop_toBottomOf="@+id/person2EditText"
+                app:layout_constraintVertical_bias="0.859">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -216,6 +215,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/lang2TV"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"

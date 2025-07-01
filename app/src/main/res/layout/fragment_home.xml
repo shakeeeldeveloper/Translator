@@ -135,18 +135,16 @@
             >
 
 
-
-                <ImageView
-                    android:id="@+id/transBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/voice_icon"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginBottom="15dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    />
+            <ImageView
+                android:id="@+id/transBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="16dp"
+                android:layout_weight="1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@drawable/voice_icon" />
 
 
             <androidx.cardview.widget.CardView
@@ -169,7 +167,7 @@
 
 
                     <TextView
-                        android:id="@+id/urduLangTV"
+                        android:id="@+id/lang2TV"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|center_horizontal"
@@ -198,7 +196,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/langTV"
+                        android:id="@+id/lang1TV"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|center_horizontal"
@@ -209,7 +207,7 @@
             </androidx.cardview.widget.CardView>
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/rotateIcon"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="52dp"
@@ -225,7 +223,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
-                android:ems="10"
+                android:background="@android:color/transparent"
                 android:gravity="start|top"
                 android:hint="Type your text here"
                 android:inputType="textMultiLine"

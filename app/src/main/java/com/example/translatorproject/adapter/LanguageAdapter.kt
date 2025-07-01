@@ -20,22 +20,7 @@ class LanguageAdapter(
     inner class LanguageViewHolder(val binding: ItemLanguageBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        /*fun bind(language: LanguageModel, position: Int) {
-            binding.languageName.text = language.name
-            binding.radioButton.isChecked = position == selectedPosition
 
-            binding.root.setOnClickListener { updateSelection(position) }
-            binding.radioButton.setOnClickListener { updateSelection(position) }
-        }
-
-        private fun updateSelection(position: Int) {
-            val selectedLanguage = filteredList[position]
-            val oldSelectedPosition = selectedPosition
-            selectedPosition = originalList.indexOf(selectedLanguage)
-
-            notifyDataSetChanged()
-            onLanguageSelected(selectedLanguage)
-        }*/
 
         fun bind(language: LanguageModel, position: Int) {
             binding.languageName.text = language.name
@@ -58,14 +43,16 @@ class LanguageAdapter(
             }
         }
 
+
         private fun updateSelection(position: Int) {
             val selectedLanguage = filteredList[position]
             val oldSelectedPosition = selectedPosition
-            selectedPosition = originalList.indexOf(selectedLanguage)
+            selectedPosition = filteredList.indexOf(selectedLanguage)
 
             notifyDataSetChanged()
             onLanguageSelected(selectedLanguage)
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LanguageViewHolder {
