@@ -4,7 +4,7 @@
       <item>
         <shape android:shape="oval">
           <solid android:color="#2890ff" /> <!-- Blue when ON -->
-          <size android:width="24dp" android:height="24dp" />
+          <size android:width="40dp" android:height="40dp" />
           <stroke android:color="#2890ff" android:width="3dp"/>
 
         </shape>
@@ -18,7 +18,7 @@
       <item>
         <shape android:shape="oval">
           <solid android:color="#F44336" /> <!-- Red when OFF -->
-          <size android:width="24dp" android:height="24dp" />
+          <size android:width="40dp" android:height="40dp" />
           <stroke android:color="#de6240" android:width="3dp"/>
         </shape>
       </item>
