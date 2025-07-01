@@ -108,9 +108,9 @@ class HomeFragment : Fragment() {
 
         binding.customSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                Toast.makeText(requireContext(), "Switch ON", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(requireContext(), "Switch ON", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(requireContext(), "Switch OFF", Toast.LENGTH_SHORT).show()
+               // Toast.makeText(requireContext(), "Switch OFF", Toast.LENGTH_SHORT).show()
             }
         }
         binding.settingImageView.setOnClickListener {
