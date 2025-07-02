@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.kapt) // ✅ Add this line here
+
 }
 
 android {
@@ -73,6 +75,8 @@ dependencies {
 
 // Room components
     implementation ("androidx.room:room-runtime:2.6.1")
+
+    kapt("androidx.room:room-compiler:2.6.1") //
 
 // Kotlin extensions and coroutines support
     implementation ("androidx.room:room-ktx:2.6.1")
