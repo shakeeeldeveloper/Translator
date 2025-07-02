@@ -1,13 +1,93 @@
 package com.example.translatorproject.ui.translate
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class TranslateViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+import androidx.lifecycle.*
+import com.example.translatorproject.database.AppDatabase
+import com.example.translatorproject.model.BookmarkEntity
+import com.example.translatorproject.model.HistoryEntity
+import com.example.translatorproject.repository.TranslateDaoRepository
+import com.example.translatorproject.repository.TranslateRepository
+import com.example.translatorproject.utils.Event
+import kotlinx.coroutines.launch
+
+class TranslateViewModel(
+    private val repository: TranslateRepository) : ViewModel() {
+
+    private val _translatedText = MutableLiveData<String>()
+    val translatedText: LiveData<String> = _translatedText
+
+    private val _error = MutableLiveData<String>()
+    val error: LiveData<String> = _error
+
+    fun translate(sourceText: String, sourceLang: String, targetLang: String) {
+        viewModelScope.launch {
+            try {
+                val result = repository.translateText(sourceText, sourceLang, targetLang)
+                _translatedText.value = result
+
+            } catch (e: Exception) {
+                _error.value = e.message
+            }
+        }
     }
-    val text: LiveData<String> = _text
+    val application = requireActivity().applicationContext as Application
+
+    private val dao = AppDatabase.getInstance(application).translationDao()
+    private val repository1 = TranslateDaoRepository(dao)
+
+    val bookmarks: LiveData<List<BookmarkEntity>> = repository1.getBookmarks().asLiveData()
+    val history: LiveData<List<HistoryEntity>> = repository1.getHistory().asLiveData()
+
+    // Bookmark
+    fun addBookmark(source: String, translated: String, sourceLang: String, targetLang: String) {
+        viewModelScope.launch {
+            repository.insertBookmark(
+                BookmarkEntity(
+                    sourceText = source,
+                    translatedText = translated,
+                    sourceLangCode = sourceLang,
+                    targetLangCode = targetLang
+                )
+            )
+        }
+    }
+
+    fun deleteBookmark(bookmark: BookmarkEntity) {
+        viewModelScope.launch {
+            repository.deleteBookmark(bookmark)
+        }
+    }
+
+    // History
+    fun addHistory(source: String, translated: String, sourceLang: String, targetLang: String) {
+        viewModelScope.launch {
+            repository.insertHistory(
+                HistoryEntity(
+                    sourceText = source,
+                    translatedText = translated,
+                    sourceLangCode = sourceLang,
+                    targetLangCode = targetLang
+                )
+            )
+        }
+    }
+
+    fun clearHistory() {
+        viewModelScope.launch {
+            repository.clearHistory()
+        }
+    }
+}
+
+class TranslateViewModelFactory(
+    private val repository: TranslateRepository,
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return TranslateViewModel(repository) as T
+    }
 }

@@ -1,3 +1,4 @@
+/*
 package com.example.translatorproject.ui.chat
 
 import android.Manifest
@@ -7,7 +8,6 @@ import android.animation.ValueAnimator
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
@@ -15,93 +15,70 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import com.example.translatorproject.R
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.translatorproject.R
 import com.example.translatorproject.databinding.FragmentChatBinding
 import com.example.translatorproject.ui.language.LanguageFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.mlkit.nl.translate.TranslateLanguage
-import com.google.mlkit.nl.translate.Translation
-import com.google.mlkit.nl.translate.TranslatorOptions
-import com.google.mlkit.nl.languageid.LanguageIdentification
-
 import java.util.Locale
 
 class ChatFragment : Fragment() {
 
     private var _binding: FragmentChatBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
-    private var selectedLang1: String = "Urdu"
-    private var selectedLang2: String = "English"
-    private var selectedLang1Code: String="ur"
-    private var selectedLang2Code: String="en"
+
+    private lateinit var viewModel: ChatViewModel
     private lateinit var speechRecognizer: SpeechRecognizer
     private lateinit var speechIntent: Intent
-    private var listeningDialog: AlertDialog? = null
+
+    private var selectedLang1 = "Urdu"
+    private var selectedLang2 = "English"
+    private var selectedLang1Code = "ur"
+    private var selectedLang2Code = "en"
+
+
+
     private var micOverlay: View? = null
     private lateinit var tts: TextToSpeech
-
-
-
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val chatViewModel =
-            ViewModelProvider(this).get(ChatViewModel::class.java)
-
         _binding = FragmentChatBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)?.visibility = View.VISIBLE
+        viewModel = ViewModelProvider(this)[ChatViewModel::class.java]
+        requireActivity().findViewById<BottomNavigationView>(com.example.translatorproject.R.id.bottom_navigation)?.visibility = View.VISIBLE
 
-       /*// val textView: TextView = binding.textDashboard
-        chatViewModel.text.observe(viewLifecycleOwner) {
-            //textView.text = it
-        }*/
-
-
-        parentFragmentManager.setFragmentResultListener(
-            "languageRequestKey",
-            viewLifecycleOwner
-        ) { _, bundle ->
-            val selectedLanguage = bundle.getString("selectedLanguage")
-            val requestFor = bundle.getString("requestFor")
-            val selectedLanguageCode=bundle.getString("LanguageCode")
-
-            when (requestFor) {
-                "button1" -> {
-                    selectedLang1 = selectedLanguage ?: "English"
-                    Toast.makeText(requireContext(),selectedLang1.toString(), Toast.LENGTH_SHORT).show()
-                    binding.lang1TV.text = selectedLang1
-                    selectedLang1Code= selectedLanguageCode.toString()
-                }
-                "button2" -> {
-                    selectedLang2 = selectedLanguage ?: "Urdu"
-                    binding.lang2TV.text = selectedLang2
-                    selectedLang2Code= selectedLanguageCode.toString()
-
-                }
-            }
-        }
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(requireContext())
         speechIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
             putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now…")
         }
+
+        parentFragmentManager.setFragmentResultListener("languageRequestKey", viewLifecycleOwner) { _, bundle ->
+            val selectedLanguage = bundle.getString("selectedLanguage") ?: return@setFragmentResultListener
+            val selectedLanguageCode = bundle.getString("LanguageCode") ?: return@setFragmentResultListener
+            when (bundle.getString("requestFor")) {
+                "button1" -> {
+                    selectedLang1 = selectedLanguage
+                    selectedLang1Code = selectedLanguageCode
+                    binding.lang1TV.text = selectedLang1
+                }
+                "button2" -> {
+                    selectedLang2 = selectedLanguage
+                    selectedLang2Code = selectedLanguageCode
+                    binding.lang2TV.text = selectedLang2
+                }
+            }
+        }
+
         binding.voiceIcon.setOnClickListener {
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.RECORD_AUDIO), 1)
@@ -109,61 +86,54 @@ class ChatFragment : Fragment() {
                 startVoiceInput()
             }
         }
+
         binding.speakLayout.setOnClickListener {
-            if (binding.lang1TV.text!=null)
-            {
-                textToSpeech(binding.person1EditText.text.toString(),selectedLang1Code)
-            }
+            val text = binding.person1EditText.text.toString()
+            viewModel.speak(text, selectedLang1Code)
         }
-
-
+        binding.speakLayoutIcon.setOnClickListener {
+            val text = binding.person2EditText.text.toString()
+            viewModel.speak(text, selectedLang2Code)
+        }
 
         binding.lang1Btn.setOnClickListener {
-
-            val languageFragment = LanguageFragment()
-            languageFragment.arguments = Bundle().apply {
-                putString("requestFor", "button1")
-            }
-
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment, languageFragment) // container in your activity layout
-                .addToBackStack(null) // optional: adds to back stack
-                .commit()
+            openLanguageSelector("button1")
         }
+
         binding.lang2Btn.setOnClickListener {
+            openLanguageSelector("button2")
+        }
 
-            val languageFragment = LanguageFragment()
-            languageFragment.arguments = Bundle().apply {
-                putString("requestFor", "button2")
-            }
+        observeViewModel()
 
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment, languageFragment) // container in your activity layout
-                .addToBackStack(null) // optional: adds to back stack
-                .commit()
+        return binding.root
+    }
+
+    private fun observeViewModel() {
+        viewModel.person1Text.observe(viewLifecycleOwner) {
+            binding.person1EditText.setText(it)
+        }
+
+        viewModel.person2Text.observe(viewLifecycleOwner) {
+            binding.person2EditText.setText(it)
+        }
+        viewModel.langn1Btn.observe(viewLifecycleOwner) {
+
         }
 
 
-
-        binding.lang1TV.text = selectedLang1
-        binding.lang2TV.text = selectedLang2
-
-        return root
-    }
-    private fun textToSpeech(text: String, selectedLang1Code: String){
-        tts = TextToSpeech(requireContext()) { status ->
-            if (status == TextToSpeech.SUCCESS) {
-                val result = tts.setLanguage(Locale(selectedLang1Code)) // Urdu, use Locale.ENGLISH for English
-                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    Toast.makeText(requireContext(), "Language not supported", Toast.LENGTH_SHORT).show()
+        viewModel.detectedLang.observe(viewLifecycleOwner) { langCode ->
+            if (langCode.isNotEmpty()) {
+                val spokenText = binding.person2EditText.text.toString()
+                if (langCode != selectedLang2Code) {
+                    viewModel.translateText(spokenText, langCode, selectedLang2Code, false)
+                } else {
+                    viewModel.translateText(spokenText, selectedLang2Code, selectedLang1Code, true)
                 }
-                else
-                    speakText(text)
+            } else {
+                Toast.makeText(requireContext(), "Cannot identify language", Toast.LENGTH_SHORT).show()
             }
         }
-    }
-    private fun speakText(text: String) {
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
     }
 
     private fun showMicOverlay() {
@@ -198,7 +168,7 @@ class ChatFragment : Fragment() {
     private fun startVoiceInput() {
         showMicOverlay()
 
-        speechRecognizer.setRecognitionListener(object : RecognitionListener {
+        speechRecognizer.setRecognitionListener(object : android.speech.RecognitionListener {
             override fun onReadyForSpeech(params: Bundle?) {}
             override fun onBeginningOfSpeech() {}
             override fun onRmsChanged(rmsdB: Float) {}
@@ -206,47 +176,14 @@ class ChatFragment : Fragment() {
             override fun onEndOfSpeech() {
                 dismissMicOverlay()
             }
-
             override fun onError(error: Int) {
-                dismissMicOverlay()
                 Toast.makeText(requireContext(), "Speech error: $error", Toast.LENGTH_SHORT).show()
             }
 
             override fun onResults(results: Bundle?) {
-                dismissMicOverlay()
-                val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                matches?.let {
-                    val spokenText = it.joinToString(", ")
-                    view?.findViewById<EditText>(R.id.person2EditText)?.setText(spokenText)
-                    val languageIdentifier = LanguageIdentification.getClient()
-
-                    languageIdentifier.identifyLanguage(spokenText)
-                        .addOnSuccessListener { languageCode ->
-                            if (languageCode == "und") {
-                                Toast.makeText(context, "Cannot identify language", Toast.LENGTH_SHORT).show()
-                            } else {
-                                // Use this languageCode as source language for TranslatorOptions
-                                val options = TranslatorOptions.Builder()
-                                    .setSourceLanguage(languageCode)
-                                    .setTargetLanguage("ur") // or your selected target
-                                    .build()
-
-                                if (selectedLang2Code != languageCode) {
-
-                                //Toast.makeText(context, "Change $languageCode", Toast.LENGTH_SHORT) .show()
-                                translate(spokenText, "person2", languageCode, selectedLang2Code)
-                            }
-                                else {
-                                    translate(spokenText,"person1",selectedLang2Code,selectedLang1Code)
-                                   // Toast.makeText(context, "No. Change", Toast.LENGTH_SHORT).show()
-                                }
-
-                                // proceed with translation
-                            }
-                        }
-
-
-                }
+                val spokenText = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.joinToString(" ") ?: ""
+                binding.person2EditText.setText(spokenText)
+                viewModel.detectLanguage(spokenText)
             }
 
             override fun onPartialResults(partialResults: Bundle?) {}
@@ -255,99 +192,33 @@ class ChatFragment : Fragment() {
 
         speechRecognizer.startListening(speechIntent)
     }
-    fun translate(sourceText: String, sourcePerson: String, srcLang: String,trLang: String){
-        if (sourceText.isEmpty()) {
-            Toast.makeText(requireContext(), "Enter text to translate", Toast.LENGTH_SHORT).show()
-            return
+
+    private fun openLanguageSelector(requestFor: String) {
+        val fragment = LanguageFragment().apply {
+            arguments = Bundle().apply {
+                putString("requestFor", requestFor)
+            }
         }
-
-        val sourceMLLang = TranslateLanguage.fromLanguageTag(srcLang)
-        val targetMLLang = TranslateLanguage.fromLanguageTag(trLang)
-
-
-        if (sourceMLLang != null && targetMLLang != null) {
-            val options = TranslatorOptions.Builder()
-                .setSourceLanguage(sourceMLLang)
-                .setTargetLanguage(targetMLLang)
-                .build()
-
-            val translator = Translation.getClient(options)
-
-            translator.downloadModelIfNeeded()
-                .addOnSuccessListener {
-                    translator.translate(sourceText)
-                        .addOnSuccessListener { translatedText ->
-                            //openTranslateFragment(sourceText, translatedText)
-                            if (sourcePerson.equals("person2")) {
-                                binding.person2EditText.setText(translatedText)
-                                translate(sourceText,"person1",selectedLang2Code,selectedLang1Code)
-                            }
-
-                            else
-                            binding.person1EditText.setText(translatedText)
-
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(requireContext(), "Translation failed", Toast.LENGTH_SHORT).show()
-                        }
-                }
-                .addOnFailureListener {
-                    Toast.makeText(requireContext(), "Model download failed", Toast.LENGTH_SHORT).show()
-                }
-        } else {
-            Toast.makeText(requireContext(), "Invalid language code", Toast.LENGTH_SHORT).show()
-        }
-
+        parentFragmentManager.beginTransaction()
+            .replace(com.example.translatorproject.R.id.nav_host_fragment, fragment)
+            .addToBackStack(null)
+            .commit()
     }
-
-
-    /*  private fun startVoiceInput() {
-          showListeningDialog()
-
-          speechRecognizer.setRecognitionListener(object : RecognitionListener {
-              override fun onReadyForSpeech(params: Bundle?) {}
-              override fun onBeginningOfSpeech() {
-                  // Already showing dialog
-              }
-
-              override fun onRmsChanged(rmsdB: Float) {}
-              override fun onBufferReceived(buffer: ByteArray?) {}
-              override fun onEndOfSpeech() {
-                  dismissListeningDialog()
-              }
-
-              override fun onError(error: Int) {
-                  dismissListeningDialog()
-                  Toast.makeText(requireContext(), "Speech error: $error", Toast.LENGTH_SHORT).show()
-              }
-
-              override fun onResults(results: Bundle?) {
-                  dismissListeningDialog()
-                  val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-                  matches?.let {
-                      val spokenText = it[0]
-                      view?.findViewById<EditText>(R.id.person2EditText)?.setText(spokenText)
-                  }
-              }
-
-              override fun onPartialResults(partialResults: Bundle?) {}
-              override fun onEvent(eventType: Int, params: Bundle?) {}
-          })
-
-          speechRecognizer.startListening(speechIntent)
-      }
-      private fun showListeningDialog() {
-          val builder = AlertDialog.Builder(requireContext())
-          builder.setView(layoutInflater.inflate(R.layout.dialog_listening, null))
-          builder.setCancelable(false)
-          listeningDialog = builder.create()
-          listeningDialog?.show()
-      }
-
-      private fun dismissListeningDialog() {
-          listeningDialog?.dismiss()
-      }*/
-
+    private fun textToSpeech(text: String, selectedLang1Code: String){
+        tts = TextToSpeech(requireContext()) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                val result = tts.setLanguage(Locale(selectedLang1Code)) // Urdu, use Locale.ENGLISH for English
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Toast.makeText(requireContext(), "Language not supported", Toast.LENGTH_SHORT).show()
+                }
+                else
+                    speakText(text)
+            }
+        }
+    }
+    private fun speakText(text: String) {
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -355,3 +226,309 @@ class ChatFragment : Fragment() {
         _binding = null
     }
 }
+*/
+
+
+
+package com.example.translatorproject.ui.chat
+
+import android.Manifest
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
+import android.animation.ValueAnimator
+import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Bundle
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+
+import com.example.translatorproject.databinding.FragmentChatBinding
+import com.example.translatorproject.ui.language.LanguageFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.mlkit.nl.translate.TranslateLanguage
+import java.util.Locale
+
+
+class ChatFragment : Fragment() {
+
+    private var _binding: FragmentChatBinding? = null
+    private val binding get() = _binding!!
+
+    private val viewModel: ChatViewModel by viewModels()
+
+    private lateinit var speechRecognizer: SpeechRecognizer
+    private lateinit var speechIntent: Intent
+    private var micOverlay: View? = null
+
+    private var selectedLang1 = "Urdu"
+    private var selectedLang2 = "English"
+    private var selectedLang1Code = "ur"
+    private var selectedLang2Code = "en"
+
+
+    private val REQUEST_CODE_SPEECH_INPUT = 1001
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentChatBinding.inflate(inflater, container, false)
+        requireActivity().findViewById<BottomNavigationView>(com.example.translatorproject.R.id.bottom_navigation)?.visibility = View.VISIBLE
+
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(requireContext())
+        speechIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, java.util.Locale.getDefault())
+            putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak now…")
+        }
+
+        parentFragmentManager.setFragmentResultListener("languageRequestKey", viewLifecycleOwner) { _, bundle ->
+            val selectedLanguage = bundle.getString("selectedLanguage") ?: return@setFragmentResultListener
+            val selectedLanguageCode = bundle.getString("LanguageCode") ?: return@setFragmentResultListener
+            when (bundle.getString("requestFor")) {
+                "button1" -> {
+                    selectedLang1 = selectedLanguage
+                    selectedLang1Code = selectedLanguageCode
+                    binding.lang1TV.text = selectedLang1
+                }
+                "button2" -> {
+                    selectedLang2 = selectedLanguage
+                    selectedLang2Code = selectedLanguageCode
+                    binding.lang2TV.text = selectedLang2
+                }
+            }
+        }
+
+      /*  binding.voiceIcon.setOnClickListener {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.RECORD_AUDIO), 1)
+            } else {
+                startVoiceInput()
+            }
+        }*/
+        binding.voice2Icon.setOnClickListener {
+
+                startSpeechToText(binding.lang2TV.text.toString())
+
+        }
+        binding.voice1Icon.setOnClickListener {
+            startSpeechToText(binding.lang1TV.text.toString())
+
+        }
+
+        binding.speakLayout.setOnClickListener {
+            val text = binding.person1EditText.text.toString()
+            viewModel.speak(text, selectedLang1Code)
+        }
+        binding.speakLayoutIcon.setOnClickListener {
+            val text = binding.person2EditText.text.toString()
+            viewModel.speak(text, selectedLang2Code)
+        }
+
+
+        binding.lang1Btn.setOnClickListener { openLanguageSelector("button1") }
+        binding.lang2Btn.setOnClickListener { openLanguageSelector("button2") }
+
+        observeViewModel()
+
+        return binding.root
+    }
+
+    private fun observeViewModel() {
+            viewModel.person1Text.observe(viewLifecycleOwner) { text ->
+                binding.person1EditText.setText(text)
+            }
+
+
+
+            viewModel.person2Text.observe(viewLifecycleOwner) { text ->
+                binding.person2EditText.setText(text)
+            }
+
+
+
+            viewModel.detectedLang.observe(viewLifecycleOwner){ langCode ->
+                val spokenText = binding.person2EditText.text.toString()
+                if (langCode != selectedLang2Code) {
+                    viewModel.translateText(spokenText, langCode, selectedLang2Code, false)
+                } else {
+                    viewModel.translateText(spokenText, selectedLang2Code, selectedLang1Code, true)
+                }
+            }
+
+    }
+
+    private fun startSpeechToText(language: String ) {
+
+        val languageCodeMap = mapOf(
+            "Afrikaans" to "af-ZA",
+            "Albanian" to "sq-AL",
+            "Arabic" to "ar-SA",
+            "Bengali" to "bn-IN",
+            "Bulgarian" to "bg-BG",
+            "Catalan" to "ca-ES",
+            "Chinese" to "zh-CN",
+            "Croatian" to "hr-HR",
+            "Czech" to "cs-CZ",
+            "Danish" to "da-DK",
+            "Dutch" to "nl-NL",
+            "English" to "en-US",
+            "Estonian" to "et-EE",
+            "Finnish" to "fi-FI",
+            "French" to "fr-FR",
+            "Galician" to "gl-ES",
+            "German" to "de-DE",
+            "Greek" to "el-GR",
+            "Gujarati" to "gu-IN",
+            "Hebrew" to "he-IL",
+            "Hindi" to "hi-IN",
+            "Hungarian" to "hu-HU",
+            "Icelandic" to "is-IS",
+            "Indonesian" to "id-ID",
+            "Italian" to "it-IT",
+            "Japanese" to "ja-JP",
+            "Kannada" to "kn-IN",
+            "Korean" to "ko-KR",
+            "Latvian" to "lv-LV",
+            "Lithuanian" to "lt-LT",
+            "Macedonian" to "mk-MK",
+            "Malay" to "ms-MY",
+            "Marathi" to "mr-IN",
+            "Norwegian" to "no-NO",
+            "Persian" to "fa-IR",
+            "Polish" to "pl-PL",
+            "Portuguese" to "pt-PT",
+            "Romanian" to "ro-RO",
+            "Russian" to "ru-RU",
+            "Slovak" to "sk-SK",
+            "Slovenian" to "sl-SI",
+            "Spanish" to "es-ES",
+            "Swedish" to "sv-SE",
+            "Swahili" to "sw-TZ",
+            "Tamil" to "ta-IN",
+            "Telugu" to "te-IN",
+            "Thai" to "th-TH",
+            "Turkish" to "tr-TR",
+            "Ukrainian" to "uk-UA",
+            "Urdu" to "ur-PK",
+            "Vietnamese" to "vi-VN",
+            "Welsh" to "cy-GB"
+        )
+
+
+
+        val languageCode=languageCodeMap[language]
+
+        //Log.d("TAG", "$language -> $code -> $mlKitLangCode")
+
+
+
+
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, languageCode)
+            putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak in selected language")
+        }
+
+        try {
+            startActivityForResult(intent, REQUEST_CODE_SPEECH_INPUT)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(requireContext(), "Speech-to-text not supported", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_SPEECH_INPUT && resultCode == Activity.RESULT_OK) {
+            val results = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            val spokenText = results?.get(0) ?: return
+
+            binding.person2EditText.setText(spokenText)
+            viewModel.detectLanguage(spokenText)
+
+        }
+    }
+
+    private fun startVoiceInput() {
+        showMicOverlay()
+        speechRecognizer.setRecognitionListener(object : android.speech.RecognitionListener {
+            override fun onReadyForSpeech(params: Bundle?) {}
+            override fun onBeginningOfSpeech() {}
+            override fun onRmsChanged(rmsdB: Float) {}
+            override fun onBufferReceived(buffer: ByteArray?) {}
+            override fun onEndOfSpeech() { dismissMicOverlay() }
+            override fun onError(error: Int) { Toast.makeText(requireContext(), "Speech error: $error", Toast.LENGTH_SHORT).show() }
+            override fun onResults(results: Bundle?) {
+                val spokenText = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.joinToString(" ") ?: ""
+                binding.person2EditText.setText(spokenText)
+                viewModel.detectLanguage(spokenText)
+            }
+            override fun onPartialResults(partialResults: Bundle?) {}
+            override fun onEvent(eventType: Int, params: Bundle?) {}
+        })
+        speechRecognizer.startListening(speechIntent)
+    }
+
+    private fun openLanguageSelector(requestFor: String) {
+        val fragment = LanguageFragment().apply {
+            arguments = Bundle().apply { putString("requestFor", requestFor) }
+        }
+        parentFragmentManager.beginTransaction()
+            .replace(com.example.translatorproject.R.id.nav_host_fragment, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun showMicOverlay() {
+        val inflater = LayoutInflater.from(requireContext())
+        micOverlay = inflater.inflate(com.example.translatorproject.R.layout.dialog_listening, null)
+        val root = requireActivity().window.decorView.findViewById<ViewGroup>(android.R.id.content)
+        root.addView(micOverlay)
+        val micView = micOverlay?.findViewById<ImageView>(com.example.translatorproject.R.id.micPulse)
+        val animator = ObjectAnimator.ofPropertyValuesHolder(
+            micView,
+            PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.3f, 1f),
+            PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.3f, 1f)
+        ).apply {
+            duration = 800
+            repeatCount = ValueAnimator.INFINITE
+        }
+        animator.start()
+        micOverlay?.tag = animator
+    }
+
+    private fun dismissMicOverlay() {
+        micOverlay?.let {
+            val animator = it.tag as? ObjectAnimator
+            animator?.cancel()
+            val root = requireActivity().window.decorView.findViewById<ViewGroup>(android.R.id.content)
+            root.removeView(it)
+            micOverlay = null
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        speechRecognizer.destroy()
+        _binding = null
+    }
+}
+

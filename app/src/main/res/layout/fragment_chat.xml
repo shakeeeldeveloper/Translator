@@ -103,7 +103,7 @@
                 android:background="#e7f3ff"
                 app:cardCornerRadius="7dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/transBtn"
+                app:layout_constraintEnd_toEndOf="@+id/voice1Icon"
                 app:layout_constraintHorizontal_bias="0.109"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/person1EditText"
@@ -122,13 +122,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="English"
+                        android:text="Urdu"
                         android:textStyle="bold" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <ImageView
-                android:id="@+id/transBtn"
+                android:id="@+id/voice1Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="118dp"
@@ -184,7 +184,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/speak_layout_icon" />
 
             <ImageView
-                android:id="@+id/voiceIcon"
+                android:id="@+id/voice2Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="15dp"
@@ -201,7 +201,7 @@
                 android:background="#e7f3ff"
                 app:cardCornerRadius="7dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/voiceIcon"
+                app:layout_constraintEnd_toStartOf="@+id/voice2Icon"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/person2EditText"

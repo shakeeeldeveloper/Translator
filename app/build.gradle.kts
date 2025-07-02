@@ -59,13 +59,32 @@ dependencies {
 
 // Speech Recognizer & TTS (default Android APIs)
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
 
 
     implementation ("androidx.camera:camera-core:1.3.1")
     implementation ("androidx.camera:camera-camera2:1.3.1")
     implementation ("androidx.camera:camera-lifecycle:1.3.1")
     implementation ("androidx.camera:camera-view:1.3.1")
+
+    implementation ("androidx.fragment:fragment-ktx:1.6.2")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+
+// Room components
+    implementation ("androidx.room:room-runtime:2.6.1")
+
+// Kotlin extensions and coroutines support
+    implementation ("androidx.room:room-ktx:2.6.1")
+
+// Lifecycle ViewModel & LiveData (already likely present)
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+
+// Optional - for Java 8+ features (e.g., Instant, LocalDate)
+    implementation ("androidx.room:room-guava:2.6.1")
+
+
 
 
 }

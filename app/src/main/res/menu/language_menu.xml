@@ -1,23 +1,4 @@
-<!--
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/action_search"
-        android:icon="@drawable/search_icon"
-        android:title="Search"
-        app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always|collapseActionView" />
-
-    &lt;!&ndash;<item
-        android:id="@+id/action_done"
-        android:icon="@drawable/search_icon"
-        android:title="Done"
-        android:visible="false"
-        app:showAsAction="always" />&ndash;&gt;
-
-</menu>
--->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
