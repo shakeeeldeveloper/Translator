@@ -122,16 +122,28 @@ class LanguageFragment : Fragment() {
 
 
     }
+
+
     fun getAllLanguages(): List<LanguageModel> {
+        val mlKitSupportedCodes = setOf(
+            "af", "ar", "be", "bg", "bn", "ca", "cs", "cy", "da",
+            "de", "el", "en", "eo", "es", "et", "fa", "fi", "fr",
+            "ga", "gl", "gu", "hi", "hr", "ht", "hu", "id", "is",
+            "it", "ja", "ka", "ko", "lt", "lv", "mk", "mr", "ms",
+            "mt", "nl", "no", "pl", "pt", "ro", "ru", "sk", "sl",
+            "sq", "sv", "sw", "ta", "te", "th", "tl", "tr", "uk",
+            "ur", "vi", "zh"
+        )
+
         val locales = Locale.getAvailableLocales()
-        val languageMap = mutableMapOf<String, String>() // code -> name
+        val languageMap = mutableMapOf<String, String>() // code -> English name
 
         for (locale in locales) {
             val code = locale.language
-            val name = locale.getDisplayLanguage(Locale.ENGLISH).trim()
+            val nameInEnglish = locale.getDisplayLanguage(Locale.ENGLISH).trim()
 
-            if (code.isNotEmpty() && name.isNotEmpty()) {
-                languageMap[code] = name // This will avoid duplicate codes
+            if (code in mlKitSupportedCodes && nameInEnglish.isNotEmpty()) {
+                languageMap[code] = nameInEnglish // override duplicates
             }
         }
 
@@ -139,6 +151,35 @@ class LanguageFragment : Fragment() {
             .map { (code, name) -> LanguageModel(code = code, name = name) }
             .sortedBy { it.name }
     }
+
+    //Text in native form
+  /*      fun getAllLanguages(): List<LanguageModel> {
+            val mlKitSupportedLanguages = setOf(
+                "af", "ar", "be", "bg", "bn", "ca", "cs", "cy", "da",
+                "de", "el", "en", "eo", "es", "et", "fa", "fi", "fr",
+                "ga", "gl", "gu", "hi", "hr", "ht", "hu", "id", "is",
+                "it", "ja", "ka", "ko", "lt", "lv", "mk", "mr", "ms",
+                "mt", "nl", "no", "pl", "pt", "ro", "ru", "sk", "sl",
+                "sq", "sv", "sw", "ta", "te", "th", "tl", "tr", "uk",
+                "ur", "vi", "zh"
+            )
+
+            val locales = Locale.getAvailableLocales()
+            val languageMap = mutableMapOf<String, String>() // code -> name
+
+            for (locale in locales) {
+                val code = locale.language
+                val name = locale.getDisplayLanguage(Locale.ENGLISH).trim()
+
+                if (code.isNotEmpty() && name.isNotEmpty()) {
+                    languageMap[code] = name // This will avoid duplicate codes
+                }
+            }
+
+            return languageMap
+                .map { (code, name) -> LanguageModel(code = code, name = name) }
+                .sortedBy { it.name }
+        }*/
 
  /*   fun getAllCountryLanguages(): List<LanguageModel> {
         val locales = Locale.getAvailableLocales()
