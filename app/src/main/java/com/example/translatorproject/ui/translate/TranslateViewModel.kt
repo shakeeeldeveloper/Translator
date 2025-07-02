@@ -16,7 +16,9 @@ import com.example.translatorproject.utils.Event
 import kotlinx.coroutines.launch
 
 class TranslateViewModel(
-    private val repository: TranslateRepository) : ViewModel() {
+    private val repository: TranslateRepository,
+    private val daoRepository: TranslateDaoRepository
+) : ViewModel() {
 
     private val _translatedText = MutableLiveData<String>()
     val translatedText: LiveData<String> = _translatedText
@@ -35,13 +37,9 @@ class TranslateViewModel(
             }
         }
     }
-    val application = requireActivity().applicationContext as Application
+    val bookmarks: LiveData<List<BookmarkEntity>> = daoRepository.getBookmarks().asLiveData()
+    val history: LiveData<List<HistoryEntity>> = daoRepository.getHistory().asLiveData()
 
-    private val dao = AppDatabase.getInstance(application).translationDao()
-    private val repository1 = TranslateDaoRepository(dao)
-
-    val bookmarks: LiveData<List<BookmarkEntity>> = repository1.getBookmarks().asLiveData()
-    val history: LiveData<List<HistoryEntity>> = repository1.getHistory().asLiveData()
 
     // Bookmark
     fun addBookmark(source: String, translated: String, sourceLang: String, targetLang: String) {
@@ -83,11 +81,20 @@ class TranslateViewModel(
         }
     }
 }
+class TranslateViewModelFactory(
+    private val repository: TranslateRepository,
+    private val daoRepository: TranslateDaoRepository
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return TranslateViewModel(repository, daoRepository) as T
+    }
+}
 
+/*
 class TranslateViewModelFactory(
     private val repository: TranslateRepository,
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return TranslateViewModel(repository) as T
     }
-}
+}*/

@@ -17,7 +17,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.translatorproject.R
+import com.example.translatorproject.database.AppDatabase
 import com.example.translatorproject.databinding.FragmentTranslateBinding
+import com.example.translatorproject.repository.TranslateDaoRepository
 import com.example.translatorproject.ui.language.LanguageFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.example.translatorproject.repository.TranslateRepository
@@ -60,10 +62,18 @@ class TranslateFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentTranslateBinding.inflate(inflater, container, false)
 
-        // ViewModel setup
+        val application = requireActivity().application
+        val dao = AppDatabase.getInstance(application).translationDao()
+        val daoRepository = TranslateDaoRepository(dao)
+        val translateRepository = TranslateRepository()
+
+        val factory = TranslateViewModelFactory(translateRepository, daoRepository)
+        viewModel = ViewModelProvider(this, factory)[TranslateViewModel::class.java]
+
+        /*// ViewModel setup
         val repository = TranslateRepository()
         viewModel = ViewModelProvider(this, TranslateViewModelFactory(repository)).get(TranslateViewModel::class.java)
-
+*/
         setupObservers()
         setupUI()
         return binding.root
@@ -203,7 +213,15 @@ class TranslateFragment : Fragment() {
             chatViewModel.speak(binding.originalText.text.toString(), selectedLang1Code)
 
         }
-
+        binding.bookmarkIconTrans.setOnClickListener {
+            viewModel.addBookmark(
+                source = binding.originalText.text.toString(),
+                translated = binding.translatedText.text.toString(),
+                sourceLang = selectedLang1Code,
+                targetLang = selectedLang2Code
+            )
+            Toast.makeText(context, "Bookmarked!", Toast.LENGTH_SHORT).show()
+        }
 
         parentFragmentManager.setFragmentResultListener("languageRequestKey", viewLifecycleOwner) { _, bundle ->
             val selectedLanguage = bundle.getString("selectedLanguage")
