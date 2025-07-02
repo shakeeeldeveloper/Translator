@@ -44,7 +44,7 @@ class TranslateViewModel(
     // Bookmark
     fun addBookmark(source: String, translated: String, sourceLang: String, targetLang: String) {
         viewModelScope.launch {
-            repository.insertBookmark(
+            daoRepository.insertBookmark(
                 BookmarkEntity(
                     sourceText = source,
                     translatedText = translated,
@@ -57,14 +57,14 @@ class TranslateViewModel(
 
     fun deleteBookmark(bookmark: BookmarkEntity) {
         viewModelScope.launch {
-            repository.deleteBookmark(bookmark)
+            daoRepository.deleteBookmark(bookmark)
         }
     }
 
     // History
     fun addHistory(source: String, translated: String, sourceLang: String, targetLang: String) {
         viewModelScope.launch {
-            repository.insertHistory(
+            daoRepository.insertHistory(
                 HistoryEntity(
                     sourceText = source,
                     translatedText = translated,
@@ -77,7 +77,7 @@ class TranslateViewModel(
 
     fun clearHistory() {
         viewModelScope.launch {
-            repository.clearHistory()
+            daoRepository.clearHistory()
         }
     }
 }

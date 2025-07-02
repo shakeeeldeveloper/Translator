@@ -86,8 +86,9 @@ class TranslateFragment : Fragment() {
 
                 binding.langSelectors.visibility = View.VISIBLE
                 binding.beforeTransCV.visibility = View.VISIBLE
-                if (binding.textEditTxt.text.toString()!=null)
-                binding.crossImg.visibility = View.VISIBLE
+                if (binding.textEditTxt.text.toString()!=null) {
+                    binding.crossImg.visibility = View.VISIBLE
+                }
                 binding.originalTextCV.visibility = View.GONE
                 binding.translatedCV.visibility = View.GONE
             }
