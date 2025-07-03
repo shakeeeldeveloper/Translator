@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.translatorproject.R
 import com.example.translatorproject.database.AppDatabase
 import com.example.translatorproject.databinding.FragmentTranslateBinding
+import com.example.translatorproject.model.HistoryEntity
 import com.example.translatorproject.repository.TranslateDaoRepository
 import com.example.translatorproject.ui.language.LanguageFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -40,6 +41,8 @@ class TranslateFragment : Fragment() {
 
     private var originalText: String? = null
     private var translatedText: String? = null
+    private var srcLang: String?=null
+    private var trgLang: String?=null
 
     private var selectedLang1 = "English"
     private var selectedLang2 = "Urdu"
@@ -55,6 +58,8 @@ class TranslateFragment : Fragment() {
         arguments?.let {
             originalText = it.getString("originalText")
             translatedText = it.getString("translatedText")
+            srcLang=it.getString("srcLang")
+            trgLang=it.getString("trgLang")
             edit="0"
         }
     }
@@ -102,6 +107,10 @@ class TranslateFragment : Fragment() {
 
                 binding.originalText.setText(binding.textEditTxt.text.toString().trim())
                 binding.translatedText.setText(translated)
+                Log.d("source", "$srcLang in tran")
+
+                viewModel.addHistory(binding.textEditTxt.text.toString(),translated,binding.lang1TV.text.toString(),binding.lang2TV.text.toString())
+
             }
         }
 
@@ -122,6 +131,9 @@ class TranslateFragment : Fragment() {
             binding.translatedCV.visibility = View.VISIBLE
             binding.originalText.setText(originalText)
             binding.translatedText.setText(translatedText)
+            viewModel.addHistory(originalText.toString(),translatedText.toString(),srcLang.toString(),trgLang.toString())
+
+
         } else {
             Log.d("Frag",binding.textEditTxt.text.toString()+ "Null____")
 
@@ -151,6 +163,10 @@ class TranslateFragment : Fragment() {
                // Toast.makeText(requireContext(), "Enter text to translate", Toast.LENGTH_SHORT).show()
             } else {
                 viewModel.translate(sourceText, selectedLang1Code, selectedLang2Code)
+                Log.d("History","Added")
+
+
+                //viewModel.addHistory(sourceText,translatedText.toString(),binding.lang1TV.text.toString(),binding.lang2TV.text.toString())
             }
         }
 
@@ -303,14 +319,9 @@ class TranslateFragment : Fragment() {
             "Welsh" to "cy-GB"
         )
 
-
-
         val languageCode=languageCodeMap[language]
 
         //Log.d("TAG", "$language -> $code -> $mlKitLangCode")
-
-
-
 
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
@@ -334,16 +345,20 @@ class TranslateFragment : Fragment() {
 
             binding.textEditTxt.setText(spokenText)
             viewModel.translate(spokenText, selectedLang1Code, selectedLang2Code)
+            viewModel.addHistory(spokenText,translatedText.toString(),binding.lang1TV.text.toString(),binding.lang2TV.text.toString())
+
 
         }
     }
     companion object {
         @JvmStatic
-        fun newInstance(originalText: String, translatedText: String): TranslateFragment {
+        fun newInstance(originalText: String, translatedText: String,srcLang: String,trgLang: String): TranslateFragment {
             val fragment = TranslateFragment()
             val args = Bundle().apply {
                 putString("originalText", originalText)
                 putString("translatedText", translatedText)
+                putString("srcLang",srcLang)
+                putString("trgLang",trgLang)
             }
             fragment.arguments = args
             return fragment

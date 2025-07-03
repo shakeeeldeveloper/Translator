@@ -12,6 +12,29 @@ import kotlinx.coroutines.tasks.await
 
 class TranslateDaoRepository ( private val dao: TranslationDao){
 
+    suspend fun translateText(sourceText: String, sourceLangCode: String, targetLangCode: String): String {
+        val sourceLang = TranslateLanguage.fromLanguageTag(sourceLangCode)
+        val targetLang = TranslateLanguage.fromLanguageTag(targetLangCode)
+
+        if (sourceLang == null || targetLang == null) {
+            throw IllegalArgumentException("Invalid language code")
+        }
+
+        val options = TranslatorOptions.Builder()
+            .setSourceLanguage(sourceLang)
+            .setTargetLanguage(targetLang)
+            .build()
+
+        val translator = Translation.getClient(options)
+
+        try {
+            translator.downloadModelIfNeeded().await()
+            val result = translator.translate(sourceText).await()
+            return result
+        } finally {
+            translator.close()
+        }
+    }
 
     suspend fun insertBookmark(bookmark: BookmarkEntity) = dao.insertBookmark(bookmark)
     fun getBookmarks(): Flow<List<BookmarkEntity>> = dao.getBookmarks()
@@ -20,5 +43,7 @@ class TranslateDaoRepository ( private val dao: TranslationDao){
     // History
     suspend fun insertHistory(history: HistoryEntity) = dao.insertHistory(history)
     fun getHistory(): Flow<List<HistoryEntity>> = dao.getHistory()
+    suspend fun deleteHistory(item: HistoryEntity) = dao.deleteHistory(item)
+
     suspend fun clearHistory() = dao.clearHistory()
 }

@@ -19,6 +19,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -57,6 +59,8 @@ dependencies {
     // ML Kit Translation
     implementation ("com.google.mlkit:translate:17.0.1")
     implementation ("com.google.mlkit:language-id:17.0.4")
+    implementation ("com.google.mlkit:text-recognition:16.0.0")
+
 
 
 // Speech Recognizer & TTS (default Android APIs)
@@ -87,6 +91,12 @@ dependencies {
 
 // Optional - for Java 8+ features (e.g., Instant, LocalDate)
     implementation ("androidx.room:room-guava:2.6.1")
+
+
+    implementation ("com.vanniktech:android-image-cropper:4.5.0")
+   // implementation ("com.canhub:android-image-cropper:4.6.1")
+
+
 
 
 

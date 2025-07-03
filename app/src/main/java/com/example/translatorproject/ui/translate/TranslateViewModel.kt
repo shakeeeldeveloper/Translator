@@ -1,6 +1,7 @@
 package com.example.translatorproject.ui.translate
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -25,6 +26,9 @@ class TranslateViewModel(
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> = _error
+
+    val historyList = daoRepository.getHistory().asLiveData()
+
 
     fun translate(sourceText: String, sourceLang: String, targetLang: String) {
         viewModelScope.launch {
@@ -63,6 +67,8 @@ class TranslateViewModel(
 
     // History
     fun addHistory(source: String, translated: String, sourceLang: String, targetLang: String) {
+        Log.d("History","To add")
+
         viewModelScope.launch {
             daoRepository.insertHistory(
                 HistoryEntity(
@@ -71,7 +77,14 @@ class TranslateViewModel(
                     sourceLangCode = sourceLang,
                     targetLangCode = targetLang
                 )
+
             )
+            Log.d("History","Added")
+        }
+    }
+    fun deleteHistory(item: HistoryEntity) {
+        viewModelScope.launch {
+            daoRepository.deleteHistory(item)
         }
     }
 

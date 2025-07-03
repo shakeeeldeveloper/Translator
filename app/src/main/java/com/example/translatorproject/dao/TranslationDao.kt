@@ -29,6 +29,10 @@ interface TranslationDao {
     @Query("SELECT * FROM history ORDER BY timestamp DESC")
     fun getHistory(): Flow<List<HistoryEntity>>
 
+
+    @Delete
+    suspend fun deleteHistory(history: HistoryEntity)
+
     @Query("DELETE FROM history")
     suspend fun clearHistory()
 }

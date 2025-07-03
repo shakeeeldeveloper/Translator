@@ -12,50 +12,27 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"        app:cardCornerRadius="10dp">
+        android:layout_marginRight="10dp"
+        app:cardCornerRadius="10dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
 
             >
-    <TextView
-        android:id="@+id/languageName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Urdu"
 
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:textColor="#646464"
+            <ImageView
+                android:id="@+id/bookmarkIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Urdu"
+                android:layout_gravity="right"
+                android:src="@drawable/bookmarked_icon"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:textColor="#646464"
 
-       />
-<!--
-    <TextView
-        android:id="@+id/transSrcLangTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:text="Language"
-        android:layout_marginRight="10dp"
-        android:textColor="#646464"
-        android:gravity="start"
-        android:textAlignment="viewStart"
-        android:textDirection="locale"
-
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/transTrgLangTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Language"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"
-        android:textStyle="bold"
-        android:textColor="#59B1FF"
-        android:textSize="16sp" />-->
+                />
 
 
             <TextView
@@ -67,6 +44,7 @@
                 android:textColor="#646464"
                 android:textSize="16sp"
                 android:gravity="start" />
+
 
             <TextView
                 android:id="@+id/transTrgLangTV"
@@ -82,3 +60,7 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>
+
+
+
+

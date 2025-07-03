@@ -38,5 +38,6 @@ class SettingActivity : AppCompatActivity() {
 
         adapter = SettingAdapter(itemList)
         recyclerView.adapter = adapter
+
     }
 }
