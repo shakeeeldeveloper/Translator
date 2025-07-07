@@ -2,6 +2,7 @@ package com.example.translatorproject
 
 import android.os.Bundle
 import android.provider.Settings
+import android.widget.CompoundButton
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -17,13 +18,15 @@ class SettingActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: SettingAdapter
+    private lateinit var binding: ActivitySettingBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_setting)
+        binding = ActivitySettingBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        recyclerView = findViewById(R.id.settingRecyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.settingRecyclerView.layoutManager = LinearLayoutManager(this)
 
         val itemList = listOf(
             SettingModel("Change Language", R.drawable.changelang_icon),
@@ -38,6 +41,15 @@ class SettingActivity : AppCompatActivity() {
 
         adapter = SettingAdapter(itemList)
         recyclerView.adapter = adapter
+
+        binding.appThemeSwitch.setOnCheckedChangeListener { _: CompoundButton, isChecked: Boolean ->
+            if (isChecked) {
+                
+                //binding.imgAfterTrans.setImageBitmap(bitmap)
+            } else {
+               // binding.imgAfterTrans.setImageBitmap(originalBitmap)
+            }
+        }
 
     }
 }

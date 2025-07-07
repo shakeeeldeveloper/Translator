@@ -1,3 +1,98 @@
+package com.example.translatorproject.ui
+
+import android.net.Uri
+import android.os.Bundle
+import android.view.View
+import android.widget.CompoundButton
+import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import com.canhub.cropper.*
+import com.example.translatorproject.databinding.ActivityCropBinding
+import com.example.translatorproject.viewmodels.CropViewModel
+
+class CropActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityCropBinding
+    private val viewModel: CropViewModel by viewModels()
+
+    private lateinit var imageUri: Uri
+    private lateinit var originalBitmap: android.graphics.Bitmap
+
+    private lateinit var croppedUri: Uri
+
+    private val cropLauncher = registerForActivityResult(CropImageContract()) { result ->
+        if (result.isSuccessful) {
+            croppedUri = result.uriContent!!
+            binding.imgBeforeTrans.setImageURI(croppedUri)
+            Toast.makeText(this, "Crop successful!", Toast.LENGTH_SHORT).show()
+        } else {
+            croppedUri=imageUri
+            Toast.makeText(this, "Crop failed: ${result.error}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityCropBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        imageUri = Uri.parse(intent.getStringExtra("image_uri"))
+        originalBitmap = android.graphics.BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))!!
+        binding.imgBeforeTrans.setImageURI(imageUri)
+
+        binding.cropIcon1.setOnClickListener {
+            launchCropper(imageUri)
+        }
+
+        binding.transBtn.setOnClickListener {
+            viewModel.performOCR(croppedUri)
+        }
+
+        observeViewModel()
+    }
+
+    private fun launchCropper(uri: Uri) {
+        val cropOptions = CropImageContractOptions(
+            uri,
+            CropImageOptions().apply {
+                guidelines = CropImageView.Guidelines.ON
+                cropShape = CropImageView.CropShape.RECTANGLE
+                autoZoomEnabled = true
+            }
+        )
+        cropLauncher.launch(cropOptions)
+    }
+
+    private fun observeViewModel() {
+        viewModel.translatedBitmap.observe(this) { bitmap ->
+            if (bitmap != null) {
+                binding.beforeTransLayout.visibility = View.GONE
+                binding.afterTranslationLayout.visibility = View.VISIBLE
+                binding.imgAfterTrans.setImageBitmap(bitmap)
+
+                binding.switchToggle.setOnCheckedChangeListener { _: CompoundButton, isChecked: Boolean ->
+                    if (isChecked) {
+                        binding.imgAfterTrans.setImageBitmap(bitmap)
+                    } else {
+                        binding.imgAfterTrans.setImageBitmap(originalBitmap)
+                    }
+                }
+            }
+        }
+
+        viewModel.ocrError.observe(this) { error ->
+            error?.let {
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+}
+
+
+
+
+/*
 
 package com.example.translatorproject
 
@@ -154,11 +249,13 @@ class CropActivity : AppCompatActivity() {
                                 }
                             }
 
-                           /* val translatedText = "↳ ${originalText.uppercase()}"
+                           */
+/* val translatedText = "↳ ${originalText.uppercase()}"
                             translatedBlocks.add(rect to translatedText)
                             translatedBitmap = drawTranslatedTextOnImage(originalBitmap, translatedBlocks)
 
-                            binding.img1.setImageBitmap(translatedBitmap)*/
+                            binding.img1.setImageBitmap(translatedBitmap)*//*
+
                         }
 
 
@@ -237,94 +334,7 @@ class CropActivity : AppCompatActivity() {
             }
         }
     }
-    /*private fun drawTranslatedTextOnImage(
-        bitmap: Bitmap,
-        translatedTexts: List<Pair<Rect, String>>
-    ): Bitmap {
-        val mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
-        val canvas = Canvas(mutableBitmap)
-        val paint = Paint().apply {
-            color = Color.RED
-            textSize = 40f
-            style = Paint.Style.FILL
-            isAntiAlias = true
-            typeface = Typeface.DEFAULT_BOLD
-        }
-
-        for ((rect, text) in translatedTexts) {
-            canvas.drawText(text, rect.left.toFloat(), rect.bottom.toFloat(), paint)
-        }
-
-        return mutableBitmap
-    }*/
-
 }
 
 
-
-
-/*
-package com.example.translatorproject
-
-import android.net.Uri
-import android.os.Bundle
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import com.canhub.cropper.CropImage
-import com.canhub.cropper.CropImageContract
-import com.canhub.cropper.CropImageContractOptions
-import com.canhub.cropper.CropImageOptions
-import com.canhub.cropper.CropImageView
-import com.example.translatorproject.databinding.ActivityCropBinding
-
-class CropActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityCropBinding
-    private lateinit var imageUri: Uri
-
-    // ✅ Modern Crop launcher
-    private val cropLauncher = registerForActivityResult(CropImageContract()) { result ->
-        if (result.isSuccessful) {
-            val croppedUri = result.uriContent
-            binding.img.setImageURI(croppedUri)
-        } else {
-            Toast.makeText(this, "Crop failed: ${result.error}", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityCropBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        val uriString = intent.getStringExtra("image_uri")
-        if (uriString != null) {
-            imageUri = Uri.parse(uriString)
-            showImage(imageUri)
-        } else {
-            Toast.makeText(this, "Image not found", Toast.LENGTH_SHORT).show()
-            finish()
-        }
-
-        binding.cropIcon.setOnClickListener {
-            launchCropper(imageUri)
-        }
-    }
-
-    private fun showImage(uri: Uri) {
-        binding.img.setImageURI(uri)
-    }
-
-    private fun launchCropper(uri: Uri) {
-        val cropOptions = CropImageContractOptions(
-            uri,
-            CropImageOptions().apply {
-                aspectRatioX = 1
-                aspectRatioY = 1
-                guidelines = CropImageView.Guidelines.ON
-            }
-        )
-        cropLauncher.launch(cropOptions)
-    }
-}
 */
