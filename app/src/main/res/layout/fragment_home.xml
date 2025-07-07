@@ -182,8 +182,9 @@
                             android:id="@+id/lang1TV"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center|center_horizontal"
+                            android:layout_gravity="center"
                             android:gravity="center"
+                            android:textColor="@color/black"
                             android:text="English"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -220,9 +221,10 @@
                             android:id="@+id/lang2TV"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center|center_horizontal"
+                            android:layout_gravity="center"
                             android:gravity="center"
                             android:text="Urdu"
+                            android:textColor="@color/black"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>

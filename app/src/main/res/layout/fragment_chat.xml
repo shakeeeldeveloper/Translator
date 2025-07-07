@@ -7,6 +7,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ui.chat.ChatFragment">
+
+    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/customToolbar"
         android:layout_width="match_parent"
@@ -41,90 +43,434 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
 
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-
-    <!-- CardView 1 -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/person1CV"
+    <!-- Body -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        app:cardCornerRadius="12dp">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
+        <!-- Person 1 Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/person1CV"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:rotation="180"
-            android:padding="16dp">
+            android:layout_height="300dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            app:cardCornerRadius="12dp">
 
-            <!-- Top Speaker Icon (Right aligned) -->
-            <LinearLayout
-                android:id="@+id/speak_layout"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:background="@drawable/bg_circle_light_blue"
-                android:gravity="center"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:rotation="180"
+                android:padding="16dp">
 
-                <ImageView
+                <LinearLayout
+                    android:id="@+id/speak_layout"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/bg_circle_light_blue"
+                    android:gravity="center"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/speak_blue" />
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/person1EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/speak_layout"
+                    android:layout_marginTop="20dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:inputType="textMultiLine"
+                    android:textSize="16sp" />
+
+                <!-- Bottom Button + Mic Row -->
+                <LinearLayout
+                    android:id="@+id/bottomRow1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="8dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/lang1Btn"
+                        android:layout_width="85dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="#e7f3ff"
+                        app:cardCornerRadius="7dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:paddingHorizontal="12dp"
+                            android:background="#e7f3ff">
+
+                            <TextView
+                                android:id="@+id/lang1TV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="English"
+                                android:textStyle="bold"
+                                android:textColor="@color/black"
+                                android:gravity="center" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:id="@+id/voice1Icon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/voice_icon1"
+                        android:contentDescription="Bottom Speaker Icon" />
+                </LinearLayout>
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Person 2 Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/person2CV"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="330dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            app:cardCornerRadius="12dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:id="@+id/speak_layout_icon"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/bg_circle_light_blue"
+                    android:gravity="center"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/speak_blue" />
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/person2EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/speak_layout_icon"
+                    android:layout_marginTop="8dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:inputType="textMultiLine"
+                    android:textSize="16sp" />
+
+                <!-- Bottom Row for Person 2 -->
+                <LinearLayout
+                    android:id="@+id/bottomRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="8dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/lang2Btn"
+                        android:layout_width="85dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="#e7f3ff"
+                        app:cardCornerRadius="7dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:paddingHorizontal="12dp"
+                            android:background="#e7f3ff">
+
+                            <TextView
+                                android:id="@+id/lang2TV"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="English"
+                                android:textColor="@color/black"
+
+                                android:textStyle="bold"
+                                android:gravity="center" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <ImageView
+                        android:id="@+id/voice2Icon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/voice_icon1"
+                        android:contentDescription="Bottom Speaker Icon" />
+                </LinearLayout>
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Center Overlapping Image -->
+        <ImageView
+            android:id="@+id/centerImage"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="Center Icon"
+            android:elevation="10dp"
+            android:src="@drawable/rotate_circle_bg"
+            android:translationY="292dp" />
+    </FrameLayout>
+</LinearLayout>
+
+
+
+
+    <!--
+    <?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".ui.chat.ChatFragment">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/customToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#ffffff"
+            android:elevation="4dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <TextView
+                    android:id="@+id/toolbarTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/speak_blue" />
-            </LinearLayout>
+                    android:text="Conversation"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
-            <!-- TextView Below Top Icon -->
+                <ImageView
+                    android:id="@+id/settingsIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/con_icon"
+                    android:contentDescription="Settings"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
-            <!-- Bottom Row: Button Left, Icon Right -->
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.appcompat.widget.Toolbar>
 
-            <EditText
-                android:id="@+id/person1EditText"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        &lt;!&ndash; CardView 1 &ndash;&gt;
+        <androidx.cardview.widget.CardView
+            android:id="@+id/person1CV"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            app:cardCornerRadius="12dp">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/speak_layout"
-                android:layout_marginTop="125dp"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:inputType="textMultiLine"
-                android:textSize="16sp" />
+                android:layout_height="match_parent"
+                android:rotation="180"
+                android:padding="16dp">
 
-            <LinearLayout
-                android:id="@+id/bottomRow1"
+                &lt;!&ndash; Top Speaker Icon (Right aligned) &ndash;&gt;
+                <LinearLayout
+                    android:id="@+id/speak_layout"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/bg_circle_light_blue"
+                    android:gravity="center"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/speak_blue" />
+                </LinearLayout>
+
+                &lt;!&ndash; TextView Below Top Icon &ndash;&gt;
+
+                &lt;!&ndash; Bottom Row: Button Left, Icon Right &ndash;&gt;
+
+                <EditText
+                    android:id="@+id/person1EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/speak_layout"
+                    android:layout_marginTop="20dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:inputType="textMultiLine"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/bottomRow1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/lang1Btn"
+                        android:layout_width="112dp"
+                        android:layout_height="48dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginEnd="180dp"
+                        android:background="#e7f3ff"
+                        app:cardCornerRadius="7dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/voice2Icon"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="#e7f3ff"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/lang1TV"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="English"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+
+
+
+                    <ImageView
+                        android:id="@+id/voice1Icon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/voice_icon1"
+                        android:layout_marginRight="8dp"
+
+                        android:contentDescription="Bottom Speaker Icon" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+
+            &lt;!&ndash;
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:layout_height="300dp"
+                android:rotation="180"
+                >
+
+                <LinearLayout
+                    android:id="@+id/speak_layout"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="right"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/bg_circle_light_blue"
+                    android:gravity="center"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/speak_Icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/speak_blue" />
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/person1EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="36dp"
+                    android:background="@android:color/transparent"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:inputType="textMultiLine"
+                    app:layout_constraintTop_toBottomOf="@+id/speak_layout" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/lang1Btn"
                     android:layout_width="112dp"
                     android:layout_height="48dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginEnd="180dp"
                     android:background="#e7f3ff"
                     app:cardCornerRadius="7dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/voice2Icon"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent">
+                    app:layout_constraintEnd_toEndOf="@+id/voice1Icon"
+                    app:layout_constraintHorizontal_bias="0.109"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/person1EditText"
+                    app:layout_constraintVertical_bias="0.877">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="#e7f3ff"
                         android:gravity="center"
+
                         android:orientation="vertical">
 
                         <TextView
@@ -132,257 +478,80 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="English"
+                            android:text="Urdu"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
-
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
 
                 <ImageView
                     android:id="@+id/voice1Icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/voice_icon1"
-                    android:contentDescription="Bottom Speaker Icon" />
-            </LinearLayout>
+                    android:layout_marginTop="118dp"
+                    android:layout_marginEnd="20dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/person1EditText"
+                    app:layout_constraintVertical_bias="0.045"
+                    app:srcCompat="@drawable/voice_icon1" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+    &ndash;&gt;
+        </androidx.cardview.widget.CardView>
 
-        </RelativeLayout>
-
-
-        <!--
-        <androidx.constraintlayout.widget.ConstraintLayout
+        &lt;!&ndash; CardView 2 &ndash;&gt;
+        <androidx.cardview.widget.CardView
+            android:id="@+id/person2CV"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:rotation="180"
-            >
+            android:layout_marginTop="330dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            app:cardCornerRadius="12dp">
 
-            <LinearLayout
-                android:id="@+id/speak_layout"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="right"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/bg_circle_light_blue"
-                android:gravity="center"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/speak_Icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/speak_blue" />
-            </LinearLayout>
-
-            <EditText
-                android:id="@+id/person1EditText"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="36dp"
-                android:background="@android:color/transparent"
-                android:ems="10"
-                android:gravity="center"
-                android:inputType="textMultiLine"
-                app:layout_constraintTop_toBottomOf="@+id/speak_layout" />
+                android:layout_height="match_parent"
+                android:padding="16dp">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/lang1Btn"
-                android:layout_width="112dp"
-                android:layout_height="48dp"
-                android:background="#e7f3ff"
-                app:cardCornerRadius="7dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/voice1Icon"
-                app:layout_constraintHorizontal_bias="0.109"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/person1EditText"
-                app:layout_constraintVertical_bias="0.877">
-
+                &lt;!&ndash; Top Speaker Icon (Right aligned) &ndash;&gt;
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#e7f3ff"
+                    android:id="@+id/speak_layout_icon"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/bg_circle_light_blue"
                     android:gravity="center"
-
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/lang1TV"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Urdu"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-            <ImageView
-                android:id="@+id/voice1Icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="118dp"
-                android:layout_marginEnd="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/person1EditText"
-                app:layout_constraintVertical_bias="0.045"
-                app:srcCompat="@drawable/voice_icon1" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
--->
-    </androidx.cardview.widget.CardView>
-
-    <!-- CardView 2 -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/person2CV"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="330dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        app:cardCornerRadius="12dp">
-
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="16dp">
-
-            <!-- Top Speaker Icon (Right aligned) -->
-            <LinearLayout
-                android:id="@+id/speak_layout_icon"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:background="@drawable/bg_circle_light_blue"
-                android:gravity="center"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/speak_blue" />
-            </LinearLayout>
-
-            <!-- TextView Below Top Icon -->
-            <EditText
-                android:id="@+id/person2EditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/speak_layout_icon"
-                android:layout_marginTop="8dp"
-                android:background="@android:color/transparent"
-                android:ems="10"
-                android:gravity="center"
-                android:inputType="textMultiLine"
-                android:textSize="16sp" />
-
-            <!-- Bottom Row: Button Left, Icon Right -->
-            <LinearLayout
-                android:id="@+id/bottomRow"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/lang2Btn"
-                    android:layout_width="112dp"
-                    android:layout_height="48dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginEnd="180dp"
-                    android:background="#e7f3ff"
-                    app:cardCornerRadius="7dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/voice2Icon"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="#e7f3ff"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/lang2TV"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="English"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-                <ImageView
-                    android:id="@+id/voice2Icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/voice_icon1"
-                    android:contentDescription="Bottom Speaker Icon" />
-            </LinearLayout>
-
-        </RelativeLayout>
-
-        <!--
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp">
-
-                    <LinearLayout
-                        android:id="@+id/speak_layout_icon"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:background="@drawable/bg_circle_light_blue"
-                        android:gravity="center"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/speak_blue" />
-                    </LinearLayout>
-
-                    <EditText
-                        android:id="@+id/person2EditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="48dp"
-                        android:background="@android:color/transparent"
-                        android:ems="10"
-                        android:gravity="center"
-                        android:inputType="textMultiLine"
-                        app:layout_constraintBottom_toTopOf="@+id/lang2Btn"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/speak_layout_icon"
-                        app:layout_constraintVertical_bias="0.0" />
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true">
 
                     <ImageView
-                        android:id="@+id/voice2Icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="15dp"
-                        android:layout_marginBottom="15dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:srcCompat="@drawable/voice_icon1" />
+                        android:src="@drawable/speak_blue" />
+                </LinearLayout>
+
+                &lt;!&ndash; TextView Below Top Icon &ndash;&gt;
+                <EditText
+                    android:id="@+id/person2EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/speak_layout_icon"
+                    android:layout_marginTop="8dp"
+                    android:background="@android:color/transparent"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:inputType="textMultiLine"
+                    android:textSize="16sp" />
+
+                &lt;!&ndash; Bottom Row: Button Left, Icon Right &ndash;&gt;
+                <LinearLayout
+                    android:id="@+id/bottomRow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
                     <androidx.cardview.widget.CardView
                         android:id="@+id/lang2Btn"
@@ -413,57 +582,147 @@
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
-                </androidx.constraintlayout.widget.ConstraintLayout>
-        -->
-    </androidx.cardview.widget.CardView>
-
-    <!-- Overlapping ImageView -->
-    <ImageView
-        android:id="@+id/centerImage"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_gravity="center_horizontal"
-        android:contentDescription="Center Icon"
-        android:elevation="10dp"
-        android:src="@drawable/rotate_circle_bg"
-        android:translationY="292dp" />
-</FrameLayout>
-</LinearLayout>
 
 
 
-<!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="300dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="16dp">
+                    <ImageView
+                        android:id="@+id/voice2Icon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/voice_icon1"
+                        android:layout_marginRight="8dp"
+                         />
+                </LinearLayout>
 
-    &lt;!&ndash; CardView 1 - Top &ndash;&gt;
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView1"
+            </RelativeLayout>
+
+            &lt;!&ndash;
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp">
+
+                        <LinearLayout
+                            android:id="@+id/speak_layout_icon"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:background="@drawable/bg_circle_light_blue"
+                            android:gravity="center"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/speak_blue" />
+                        </LinearLayout>
+
+                        <EditText
+                            android:id="@+id/person2EditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="48dp"
+                            android:background="@android:color/transparent"
+                            android:ems="10"
+                            android:gravity="center"
+                            android:inputType="textMultiLine"
+                            app:layout_constraintBottom_toTopOf="@+id/lang2Btn"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/speak_layout_icon"
+                            app:layout_constraintVertical_bias="0.0" />
+
+                        <ImageView
+                            android:id="@+id/voice2Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="15dp"
+                            android:layout_marginBottom="15dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:srcCompat="@drawable/voice_icon1" />
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/lang2Btn"
+                            android:layout_width="112dp"
+                            android:layout_height="48dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginEnd="180dp"
+                            android:background="#e7f3ff"
+                            app:cardCornerRadius="7dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/voice2Icon"
+                            app:layout_constraintHorizontal_bias="1.0"
+                            app:layout_constraintStart_toStartOf="parent">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="#e7f3ff"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/lang2TV"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="English"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+            &ndash;&gt;
+        </androidx.cardview.widget.CardView>
+
+        &lt;!&ndash; Overlapping ImageView &ndash;&gt;
+        <ImageView
+            android:id="@+id/centerImage"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="Center Icon"
+            android:elevation="10dp"
+            android:src="@drawable/rotate_circle_bg"
+            android:translationY="292dp" />
+    </FrameLayout>
+    </LinearLayout>
+
+
+
+    &lt;!&ndash;<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_gravity="top"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp" />
+        android:layout_height="300dp"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:padding="16dp">
 
-    &lt;!&ndash; CardView 2 - Bottom &ndash;&gt;
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView2"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_gravity="bottom"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp" />
+        &lt;!&ndash; CardView 1 - Top &ndash;&gt;
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView1"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_gravity="top"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp" />
 
-    &lt;!&ndash; Overlapping ImageView (centered to overlap both cardviews) &ndash;&gt;
-    <ImageView
-        android:id="@+id/overlappingImage"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_gravity="center"
-        android:src="@drawable/rotate_circle_bg"
-        android:scaleType="centerCrop"
-        android:elevation="8dp" />
-</FrameLayout>-->
+        &lt;!&ndash; CardView 2 - Bottom &ndash;&gt;
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView2"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_gravity="bottom"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp" />
 
+        &lt;!&ndash; Overlapping ImageView (centered to overlap both cardviews) &ndash;&gt;
+        <ImageView
+            android:id="@+id/overlappingImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:src="@drawable/rotate_circle_bg"
+            android:scaleType="centerCrop"
+            android:elevation="8dp" />
+    </FrameLayout>&ndash;&gt;
+
+    -->
