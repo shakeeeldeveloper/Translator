@@ -1,5 +1,6 @@
 package com.example.translatorproject
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.translatorproject.ui.chat.ChatFragment
@@ -22,6 +23,30 @@ class MainActivity : AppCompatActivity() {
             .commit()
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_home -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment, HomeFragment())
+                        .commit()
+                    true
+                }
+                R.id.navigation_chat -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment, ChatFragment())
+                        .commit()
+                    true
+                }
+                R.id.navigation_camera -> {
+                    // Launch CameraActivity instead of loading a fragment
+                    val intent = Intent(this, CameraActivity::class.java)
+                    startActivity(intent)
+                    false // return false to prevent item being "selected"
+                }
+                else -> false
+            }
+        }
+
+        /*binding.bottomNavigation.setOnItemSelectedListener { item ->
             val fragment = when (item.itemId) {
                 R.id.navigation_home -> HomeFragment()
                 R.id.navigation_chat -> ChatFragment()
@@ -34,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                     .commit()
                 true
             } ?: false
-        }
+        }*/
 
     }
 }

@@ -2,6 +2,7 @@ package com.example.translatorproject.repository
 
 
 import android.app.Application
+import android.content.ContentValues
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -11,6 +12,10 @@ import android.graphics.Rect
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Environment
+import android.provider.MediaStore
+import android.speech.tts.TextToSpeech
+import android.util.Log
+import android.widget.Toast
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
@@ -24,10 +29,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
+import java.io.OutputStream
+import java.util.Locale
 
 class CropRepository(private val app: Application) {
 
     private val translationDao = AppDatabase.getInstance(app).translationDao()
+    private var tts: TextToSpeech? = null
 
     fun processOCR(
         uri: Uri,
@@ -61,31 +69,42 @@ class CropRepository(private val app: Application) {
 
     fun translateBlocks(
         blocks: List<Pair<Rect, String>>,
-        onTranslated: (List<Pair<Rect, String>>) -> Unit
+        onTranslated: (List<Pair<Rect, String>>) -> Unit,
+        langCode: String
     ) {
+        Log.d("code",langCode)
         val options = TranslatorOptions.Builder()
-            .setSourceLanguage(TranslateLanguage.ENGLISH)
+            .setSourceLanguage(langCode)
             .setTargetLanguage(TranslateLanguage.URDU)
             .build()
+        val fullText = blocks.joinToString(" ") { it.second }
+        Log.d("FullText", fullText)
+
 
         val translator = Translation.getClient(options)
         translator.downloadModelIfNeeded().addOnSuccessListener {
+            translator.translate(fullText)
+                .addOnSuccessListener { translatedText ->
+
+
+                    CoroutineScope(Dispatchers.IO).launch {
+                        translationDao.insertHistory(
+                            HistoryEntity(
+                                sourceText = fullText,
+                                translatedText = translatedText,
+                                sourceLangCode = "English",
+                                targetLangCode = "Urdu"
+                            )
+                        )
+                    }
+
+
+                }
             val results = mutableListOf<Pair<Rect, String>>()
             blocks.forEachIndexed { index, (rect, text) ->
                 translator.translate(text)
                     .addOnSuccessListener { translatedText ->
                         results.add(rect to translatedText)
-
-                        CoroutineScope(Dispatchers.IO).launch {
-                            translationDao.insertHistory(
-                                HistoryEntity(
-                                    sourceText = text,
-                                    translatedText = translatedText,
-                                    sourceLangCode = "English",
-                                    targetLangCode = "Urdu"
-                                )
-                            )
-                        }
                         if (results.size == blocks.size) {
                             onTranslated(results)
                         }
@@ -109,10 +128,10 @@ class CropRepository(private val app: Application) {
 
         val textPaint = Paint().apply {
             color = Color.BLACK
-            textSize = 120f
+            textSize = 80f
             style = Paint.Style.FILL
             isAntiAlias = true
-            typeface = Typeface.DEFAULT_BOLD
+            typeface = Typeface.DEFAULT
         }
 
         translatedTexts.forEach { (rect, text) ->
@@ -129,18 +148,50 @@ class CropRepository(private val app: Application) {
 
         return mutableBitmap
     }
-    fun saveBitmapToGallery(bitmap: Bitmap): String? {
-        return try {
-            val dir = File(app.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "TranslatedImages")
-            if (!dir.exists()) dir.mkdirs()
 
-            val file = File(dir, "translated_${System.currentTimeMillis()}.png")
-            FileOutputStream(file).use { out ->
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+    fun saveBitmapToPictures(bitmap: Bitmap, fileName: String): Boolean {
+        return try {
+            val contentValues = ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/MyApp")
+                put(MediaStore.Images.Media.IS_PENDING, 1)
             }
-            file.absolutePath
+
+            val resolver = app.contentResolver
+            val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+            uri?.let {
+                val outputStream: OutputStream? = resolver.openOutputStream(it)
+                outputStream?.use {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+                }
+
+                contentValues.clear()
+                contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
+                resolver.update(uri, contentValues, null, null)
+                Toast.makeText(app,"Image Saved!!", Toast.LENGTH_SHORT).show()
+                return true
+            } ?: false
         } catch (e: Exception) {
-            null
+            e.printStackTrace()
+            false
+        }
+    }
+    fun speakText(text: String, languageCode: String) {
+        //   Log.d("speak",text+ languageCode +" in repo")
+
+        tts = TextToSpeech(app) { status ->
+            Log.d("speak",text+ languageCode +" in repo")
+            if (status == TextToSpeech.SUCCESS) {
+
+                val result = tts?.setLanguage(Locale(languageCode))
+                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    Toast.makeText(app, "TTS language not supported", Toast.LENGTH_SHORT).show()
+                } else {
+                    tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+                }
+            }
         }
     }
 

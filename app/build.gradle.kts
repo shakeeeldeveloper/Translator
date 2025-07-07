@@ -96,6 +96,8 @@ dependencies {
     implementation ("com.vanniktech:android-image-cropper:4.5.0")
    // implementation ("com.canhub:android-image-cropper:4.6.1")
 
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    kapt ("com.github.bumptech.glide:compiler:4.16.0")
 
 
 

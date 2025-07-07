@@ -40,7 +40,7 @@ class SettingActivity : AppCompatActivity() {
         )
 
         adapter = SettingAdapter(itemList)
-        recyclerView.adapter = adapter
+        binding.settingRecyclerView.adapter = adapter
 
         binding.appThemeSwitch.setOnCheckedChangeListener { _: CompoundButton, isChecked: Boolean ->
             if (isChecked) {

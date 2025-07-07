@@ -1,7 +1,11 @@
-package com.example.translatorproject.ui
+package com.example.translatorproject
 
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.Toast
@@ -9,6 +13,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.canhub.cropper.*
 import com.example.translatorproject.databinding.ActivityCropBinding
+import com.example.translatorproject.utils.ClipboardUtils
 import com.example.translatorproject.viewmodels.CropViewModel
 
 class CropActivity : AppCompatActivity() {
@@ -17,9 +22,9 @@ class CropActivity : AppCompatActivity() {
     private val viewModel: CropViewModel by viewModels()
 
     private lateinit var imageUri: Uri
-    private lateinit var originalBitmap: android.graphics.Bitmap
+    private lateinit var originalBitmap: Bitmap
 
-    private lateinit var croppedUri: Uri
+    private var croppedUri: Uri? = null
 
     private val cropLauncher = registerForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
@@ -28,6 +33,8 @@ class CropActivity : AppCompatActivity() {
             Toast.makeText(this, "Crop successful!", Toast.LENGTH_SHORT).show()
         } else {
             croppedUri=imageUri
+            Log.e("CropError", "Crop failed", result.error)
+
             Toast.makeText(this, "Crop failed: ${result.error}", Toast.LENGTH_SHORT).show()
         }
     }
@@ -37,19 +44,49 @@ class CropActivity : AppCompatActivity() {
         binding = ActivityCropBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        imageUri = Uri.parse(intent.getStringExtra("image_uri"))
-        originalBitmap = android.graphics.BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))!!
-        binding.imgBeforeTrans.setImageURI(imageUri)
 
+
+        val uriString = intent.getStringExtra("image_uri")
+        if (uriString != null) {
+            imageUri = Uri.parse(uriString)
+            contentResolver.openInputStream(imageUri)?.use {
+                originalBitmap = BitmapFactory.decodeStream(it)
+                binding.imgBeforeTrans.setImageBitmap(originalBitmap)
+            }
+        }
+
+       /* imageUri = Uri.parse(intent.getStringExtra("image_uri")
+        originalBitmap = BitmapFactory.decodeStream(contentResolver.openInputStream(imageUri))!!
+        binding.imgBeforeTrans.setImageURI(imageUri)
+*/
         binding.cropIcon1.setOnClickListener {
             launchCropper(imageUri)
         }
 
         binding.transBtn.setOnClickListener {
-            viewModel.performOCR(croppedUri)
+            if (croppedUri!=null)
+                croppedUri?.let {   viewModel.performOCR(it) }
+
+
+            else
+                viewModel.performOCR(imageUri)
+
+        }
+        binding.retakeCamera.setOnClickListener {
+            val intent = Intent(this, CameraActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 
+
         observeViewModel()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, CameraActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun launchCropper(uri: Uri) {
@@ -71,10 +108,23 @@ class CropActivity : AppCompatActivity() {
                 binding.afterTranslationLayout.visibility = View.VISIBLE
                 binding.imgAfterTrans.setImageBitmap(bitmap)
 
+
+
+                binding.saveImage.setOnClickListener {
+                    val fileName = "translated_${System.currentTimeMillis()}.jpg"
+                    viewModel.saveBitmap(bitmap, fileName)
+                }
                 binding.switchToggle.setOnCheckedChangeListener { _: CompoundButton, isChecked: Boolean ->
                     if (isChecked) {
                         binding.imgAfterTrans.setImageBitmap(bitmap)
                     } else {
+                        croppedUri?.let { uri ->
+                            contentResolver.openInputStream(uri)?.use { inputStream ->
+                                originalBitmap = BitmapFactory.decodeStream(inputStream)
+                            }
+                        } ?: run {
+                            Toast.makeText(this, "Image URI is null", Toast.LENGTH_SHORT).show()
+                        }
                         binding.imgAfterTrans.setImageBitmap(originalBitmap)
                     }
                 }
@@ -86,6 +136,34 @@ class CropActivity : AppCompatActivity() {
                 Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
             }
         }
+        viewModel.detectedText.observe(this) {
+            binding.speakIcon.setOnClickListener {
+
+                Log.d("code",viewModel.detectedText.value.toString()+" " +viewModel.detectedLangCode.value.toString())
+
+                viewModel.speak(viewModel.detectedText.value.toString(),viewModel.detectedLangCode.value.toString() )
+
+            }
+
+        }
+        viewModel.translatedText.observe(this) {
+            binding.speakIcon.setOnClickListener {
+
+                Log.d("code",viewModel.detectedText.value.toString()+" " +viewModel.detectedLangCode.value.toString())
+
+                viewModel.speak(viewModel.detectedText.value.toString(),viewModel.detectedLangCode.value.toString() )
+
+            }
+            binding.copyIcon.setOnClickListener {
+                val intent = Intent(this, ImageTranslateActivity::class.java).apply {
+                    putExtra("source_text",viewModel.detectedText.value.toString() )
+                    putExtra("translated_text", viewModel.translatedText.value.toString())
+                }
+                startActivity(intent)
+
+            }
+        }
+
     }
 }
 
