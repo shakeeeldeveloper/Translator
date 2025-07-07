@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Settings"
-                android:textColor="@android:color/black"
+                android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:paddingEnd="16dp"/>
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:text="App Theme"
-                android:textColor="@android:color/black"
+                android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold"
 
@@ -148,7 +148,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:text="Offline Translation"
-                android:textColor="@android:color/black"
+                android:textColor="@color/black"
                 android:textSize="17sp"
                 android:textStyle="bold"
 

@@ -1,8 +1,10 @@
 package com.example.translatorproject
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.example.translatorproject.ui.chat.ChatFragment
 import com.example.translatorproject.ui.home.HomeFragment
 import com.example.translatorproject.ui.camera.CameraFragment
@@ -11,9 +13,20 @@ import com.example.translatorproject.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var sharedPref: SharedPreferences
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sharedPref = getSharedPreferences("settings", MODE_PRIVATE)
+        val isNightMode = sharedPref.getBoolean("night_mode", false)
+
+        AppCompatDelegate.setDefaultNightMode(
+            if (isNightMode) AppCompatDelegate.MODE_NIGHT_YES
+            else AppCompatDelegate.MODE_NIGHT_NO
+        )
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
